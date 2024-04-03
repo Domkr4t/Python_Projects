@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+    <style>
+        div.a {
+            text-align: center;
+        }
+    </style>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ category.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+
+          <a class="navbar-brand" href="/">I&O</a>
+
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Главная</a></li>
+              <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Добавить новость</a></li>
+              <li class="nav-item"><a class="nav-link active" aria-current="page" href="http://127.0.0.1:8000/admin">Админка</a></li>
+            </ul>
+
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Поиск</button>
+            </form>
+          </div>
+        </div>
+    </nav>
+
+    <div class="conteiner mt-3">
+        <div class="row">
+          
+          <div class="col-md-3">
+            <div class="list-group">
+              <div class="a">
+                <p><h1>Список категорий</h1></p>
+                <p><h5>Выберите категорию из списка!</h5></p>
+              </div>
+              
+
+              {% for item in categories %}
+                
+                <a href="/category/{{ item.pk }}" class="list-group-item list-group-item-action">{{ item.title }}</a>
+              {% endfor %}
+                
+            </div>
+          </div>
+
+            <div class="col-md-9">
+
+              <div class="a">
+                <p><h1>Список новостей</h1></p>
+                <p><h5>Количество новостей категории "{{ category.title }}":  {{ news.count }}</h5></p>
+
+                   
+              </div>
+
+              {% for item in news %}
+                  <div class="card mb-3">
+
+                      <div class="card-header">
+                        Категория: {{ item.category }} 
+                      </div>
+
+                      <div class="card-body">
+                          <div class="media">
+                              <div class="media-body">
+                                  <h5 class="card-title">{{ item.title }}</h5>
+                                  <p class="card-text">{{ item.content|truncatewords:50 }}</p> 
+
+                                  {% if item.photo %}
+                                      <img src="{{ item.photo.url }}" alt="" width="350">
+                                  {% else %}
+                                      <img src="/media/photos/default/photo_2022-07-19_18-58-07.jpg" alt="" width="350">
+                                  {% endif %} <br> <br>
+
+                                  <a href="#" class="btn btn-primary">Подробнее...</a>
+                              </div> 
+                          </div>
+                      </div>
+
+                      <div class="card-footer text-muted">
+                        <i>Опубликовано: {{ item.created_at|date:"H:i:s d-m-Y" }}</i>
+                      </div>
+                  </div>
+              {% endfor %}
+            </div>
+            
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
+</body>
+</html>
