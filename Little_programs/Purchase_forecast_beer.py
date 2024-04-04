@@ -74,6 +74,21 @@ if os.path.exists('Прогноз_пиво_короткое_время.xlsx'):
     # Если файл существует, удаляем его
     os.remove('Прогноз_пиво_короткое_время.xlsx')
 
-results.to_excel('Прогноз_пиво_короткое_время.xlsx', index=False)
+
+second_table = pd.DataFrame(columns=['Номенклатура', 'Заказ кег'])
+
+for index, row in results.iterrows():
+    nomenclature = row['Номенклатура']
+    forecast = row['Заказ кег']
+    if nomenclature == "Вайлд Черри":
+        second_table = second_table._append({'Номенклатура': nomenclature, 'Заказ кег': f"{abs(forecast)}*20"}, ignore_index=True)
+    else:
+        second_table = second_table._append({'Номенклатура': nomenclature, 'Заказ кег': f"{abs(forecast)}*30"}, ignore_index=True)
+
+# Запись двух таблиц в один Excel файл
+with pd.ExcelWriter('Прогноз_пиво_короткое_время.xlsx') as writer:
+    results.to_excel(writer, index=False)
+    second_table.to_excel(writer, startrow=len(results) + 3, index=False)
 
 print("Все успешно!")
+
