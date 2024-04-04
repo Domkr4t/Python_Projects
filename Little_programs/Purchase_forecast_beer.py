@@ -13,7 +13,7 @@ def custom_ceil(number):
 # Функция для обработки пива
 def handle_beer(nomenclature, stock, total_quantity):
     forecast = math.floor((stock - total_quantity) / 30)
-    if (forecast > 0):
+    if (forecast >= 0):
         remaining_liters = (stock - total_quantity) % 30
     else:
         remaining_liters = 0
@@ -70,10 +70,10 @@ for index, row in residuals.iterrows():
 
 
 # Запись результатов в новый Excel файл
-if os.path.exists('Прогноз_пиво.xlsx'):
+if os.path.exists('Прогноз_пиво_короткое_время.xlsx'):
     # Если файл существует, удаляем его
-    os.remove('Прогноз_пиво.xlsx')
+    os.remove('Прогноз_пиво_короткое_время.xlsx')
 
-results.to_excel('Прогноз_пиво.xlsx', index=False)
+results.to_excel('Прогноз_пиво_короткое_время.xlsx', index=False)
 
 print("Все успешно!")
