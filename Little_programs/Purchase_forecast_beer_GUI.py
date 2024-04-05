@@ -4,6 +4,11 @@ import math
 import tkinter as tk
 from tkinter import filedialog
 
+
+sales_file_path = None
+residuals_file_path = None
+report_file_path = None
+
 #Функция округления
 def custom_ceil(number):
     if number < 0:
@@ -25,26 +30,35 @@ def handle_beer(nomenclature, stock, total_quantity):
 
 def load_sales_file():
     global sales_file_path
-    sales_file_path = filedialog.askopenfilename()
+    sales_file_path = filedialog.askopenfilename(initialdir=os.path.dirname(os.path.abspath(__file__)), title='Загрузка файла с продажами')
     print(f"Выбран файл с продажами: {sales_file_path}")
     if sales_file_path:
-        message_label_sales.config(text=f"{os.path.basename(sales_file_path)}")
+        message_label_sales.config(text=f"{os.path.basename(sales_file_path)}", foreground='green')
     else:
         message_label_sales.config(text="Файл не выбран")
 
+
 def load_residuals_file():
     global residuals_file_path
-    residuals_file_path = filedialog.askopenfilename()
+    residuals_file_path = filedialog.askopenfilename(initialdir=os.path.dirname(os.path.abspath(__file__)), title='Загрузка файла с остатками')
     print(f"Выбран файл с остатками: {residuals_file_path}")
     if residuals_file_path:
-        message_label_residuals.config(text=f"{os.path.basename(residuals_file_path)}")
+        message_label_residuals.config(text=f"{os.path.basename(residuals_file_path)}", foreground='green')
     else:
         message_label_residuals.config(text="Файл не выбран")
+
+
+def save_file():
+    global report_file_path
+    # Открываем диалог выбора файла для сохранения
+    report_file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel Files", "*.xlsx"), ("All Files", "*.*")])
 
 
 def generate_report():
 
     if sales_file_path is None or residuals_file_path is None:
+        message_file_not_upload = tk.Label(window, text="Файлы не загружены", foreground='red')
+        message_file_not_upload.place(x=185, y=60)
         print("Пожалуйста, выберите оба файла перед генерацией отчета.")
         return
 
@@ -109,12 +123,13 @@ def generate_report():
         else:
             second_table = second_table._append({'Номенклатура': nomenclature, 'Заказ кег': f"{abs(forecast)}*30"}, ignore_index=True)
 
+    save_file()
+
     # Запись двух таблиц в один Excel файл
-    with pd.ExcelWriter('Прогноз_пиво_короткое_время.xlsx') as writer:
+    with pd.ExcelWriter(report_file_path) as writer:
         results.to_excel(writer, index=False)
         second_table.to_excel(writer, startrow=len(results) + 3, index=False)
         print("Генерация отчета...")
-        window.destroy()
 
 
 
@@ -133,6 +148,8 @@ btn_sales.place(x=25, y=10)
 btn_residuals.place(x=300, y=10)
 btn_generate = tk.Button(window, text="Сгенерировать отчет", command=generate_report)
 btn_generate.place(x=185, y=100)
+
+
 window.mainloop()
 
 print("Все успешно!")
