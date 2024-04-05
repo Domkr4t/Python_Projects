@@ -16,7 +16,8 @@ def custom_ceil(number):
 def handle_beer(nomenclature, stock, total_quantity):
     forecast = math.floor((stock - total_quantity) / 30)
     if (forecast >= 0):
-        remaining_liters = (stock - total_quantity) % 30
+        forecast = 0
+        remaining_liters = stock - total_quantity
     else:
         remaining_liters = 0
     return {'Номенклатура': nomenclature, 'Остаток': stock, 'Прогноз': total_quantity, 'Заказ кег': forecast, 'Остаток литров': remaining_liters}
