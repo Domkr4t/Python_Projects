@@ -43,6 +43,18 @@ def handle_snacks(nomenclature, stock, total_quantity):
     return {'Номенклатура': nomenclature, 'Остаток': stock, 'Прогноз': total_quantity, 'Прогнозируемый остаток': forecasted_balance, 'Заказ': abs(forecast)}
 
 
+def handle_other(nomenclature, stock, total_quantity):
+    forecasted_balance = stock - total_quantity
+    if (forecasted_balance < 600 and not forecasted_balance.is_integer()):
+        forecast = 1 - forecasted_balance
+    elif (forecasted_balance >= 600 and not forecasted_balance.is_integer()):
+        forecast = 0
+    elif (forecasted_balance.is_integer()):
+        forecast = 0
+
+    return {'Номенклатура': nomenclature, 'Остаток': stock, 'Прогноз': total_quantity, 'Прогнозируемый остаток': forecasted_balance, 'Заказ': abs(forecast)}
+
+
 def load_sales_file():
     global sales_file_path
     sales_file_path = filedialog.askopenfilename(initialdir='c:/User/Desktop', title='Загрузка файла с продажами')
@@ -75,10 +87,10 @@ def open_file(file_path):
     else:
         os.system(f"xdg-open {file_path}")
 
-def save_file():
+def save_file(category):
     global report_file_path
     # Открываем диалог выбора файла для сохранения
-    report_file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", title='Сохранить отчет', filetypes=[("Excel Files", "*.xlsx"), ("All Files", "*.*")])
+    report_file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", title=f'Сохранить отчет "{category}"', filetypes=[("Excel Files", "*.xlsx"), ("All Files", "*.*")])
 
 
 def generate_report():
@@ -116,6 +128,9 @@ def generate_report():
     elif selected_category == "Закуски к пиву":
         results = pd.DataFrame(columns=['Номенклатура', 'Остаток', 'Прогноз', 'Прогнозируемый остаток', 'Заказ'])
         second_table = pd.DataFrame(columns=['Номенклатура', 'Заказ'])
+    elif selected_category == "Прочее":
+        results = pd.DataFrame(columns=['Номенклатура', 'Остаток', 'Прогноз', 'Прогнозируемый остаток', 'Заказ'])
+        second_table = pd.DataFrame(columns=['Номенклатура', 'Заказ'])
 
     # Обработка данных
     for index, row in residuals.iterrows():
@@ -125,11 +140,10 @@ def generate_report():
 
         # Находим все записи в первом файле, соответствующие текущей номенклатуре
         matching_rows = sales[sales['Номенклатура'] == nomenclature]
+        if selected_category == "Пиво":
+            if not matching_rows.empty and matching_rows['Категория товара'].str.contains("Пиво").any():
+                total_quantity = matching_rows['Количество товара'].sum()
 
-        if not matching_rows.empty and matching_rows['Категория товара'].str.contains(selected_category).any():
-            total_quantity = matching_rows['Количество товара'].sum()
-
-            if selected_category == "Пиво":
                 result = handle_beer(nomenclature, stock, total_quantity)
                 results = results._append(result, ignore_index=True)
                 # Замена именований
@@ -141,8 +155,17 @@ def generate_report():
                 results['Номенклатура'] = results['Номенклатура'].replace("Амбирлэнд Светлое фильтрованное", "Бундес")
                 results['Номенклатура'] = results['Номенклатура'].replace("Амбирлэнд Темное", "Темное")
                 results['Номенклатура'] = results['Номенклатура'].replace("Амбирлэнд Вишневый крик", "Вайлд Черри")
-            elif selected_category == "Закуски к пиву":
+        elif selected_category == "Закуски к пиву":
+            if not matching_rows.empty and matching_rows['Категория товара'].str.contains("Закуски к пиву").any() | matching_rows['Категория товара'].str.contains("Рыба").any():
+                total_quantity = matching_rows['Количество товара'].sum()
+
                 result = handle_snacks(nomenclature, stock, total_quantity)
+                results = results._append(result, ignore_index=True)
+        elif selected_category == "Прочее":
+            if not matching_rows.empty and matching_rows['Категория товара'].str.contains("Прочее").any():
+                total_quantity = matching_rows['Количество товара'].sum()
+
+                result = handle_other(nomenclature, stock, total_quantity)
                 results = results._append(result, ignore_index=True)
 
     #Вторая таблица
@@ -164,15 +187,21 @@ def generate_report():
                 second_table = second_table._append({second_table.columns[0]: nomenclature, second_table.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
             else:
                 second_table = second_table._append({second_table.columns[0]: nomenclature, second_table.columns[1]: f"{int(custom_ceil(forecast))} кг."}, ignore_index=True)
+    elif selected_category == "Прочее":
+        for index, row in results.iterrows():
+            nomenclature = row['Номенклатура']
+            forecast = row['Заказ']
 
-    save_file()
+            second_table = second_table._append({second_table.columns[0]: nomenclature, second_table.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
+
+    save_file(selected_category)
 
     # Запись двух таблиц в один Excel файл
     with pd.ExcelWriter(report_file_path) as writer:
-        results.to_excel(writer, index=False)
-        second_table.to_excel(writer, startrow=len(results) + 3, index=False)
-        message_result = tk.Label(window, text=f"Файл {report_file_path.split('/')[-1]} загружен", foreground='blue')
-        message_result.place(x=185, y=175)
+        results.to_excel(writer, sheet_name=selected_category, index=False)
+        second_table.to_excel(writer, sheet_name=selected_category, startrow=len(results) + 3, index=False)
+        message_result.config(text=f"Файл {report_file_path.split('/')[-1]} загружен", foreground='blue')
+
 
     open_file (report_file_path)
 
@@ -186,11 +215,13 @@ message_label_residuals = tk.Label(window, text="Файл не выбран")
 message_label_residuals.place(x=340, y=40)
 message_file_not_upload = tk.Label(window, foreground='red')
 message_file_not_upload.place(x=185, y=60)
+message_result = tk.Label(window, text="")
+message_result.place(x=185, y=175)
 
 # Создание ComboBox для выбора категории
 category_var = tk.StringVar(window)
 category_var.set("Пиво") # Установка значения по умолчанию
-category_combobox = ttk.Combobox(window, textvariable=category_var, values=["Пиво", "Закуски к пиву"], state='readonly')
+category_combobox = ttk.Combobox(window, textvariable=category_var, values=["Пиво", "Закуски к пиву", "Прочее"], state='readonly')
 category_combobox.place(x=185, y=100)
 
 btn_sales = tk.Button(window, text="Загрузить файл с продажами", command=load_sales_file)
