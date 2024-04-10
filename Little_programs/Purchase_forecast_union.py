@@ -9,7 +9,6 @@ import platform
 sales_file_path = None
 residuals_file_path = None
 report_file_path = None
-category_var = None
 
 
 #Функция округления
@@ -33,6 +32,19 @@ def handle_beer(nomenclature, stock, total_quantity):
 
 # Функция для обработки закусок к пиву
 def handle_snacks(nomenclature, stock, total_quantity):
+    forecasted_balance = stock - total_quantity
+    if (forecasted_balance < 600 and not forecasted_balance.is_integer()):
+        forecast = 1 - forecasted_balance
+    elif (forecasted_balance >= 600 and not forecasted_balance.is_integer()):
+        forecast = 0
+    elif (forecasted_balance.is_integer()):
+        forecast = 0
+
+    return {'Номенклатура': nomenclature, 'Остаток': stock, 'Прогноз': total_quantity, 'Прогнозируемый остаток': forecasted_balance, 'Заказ': abs(forecast)}
+
+
+# Функция для обработки прочего
+def handle_other(nomenclature, stock, total_quantity):
     forecasted_balance = stock - total_quantity
     if (forecasted_balance < 600 and not forecasted_balance.is_integer()):
         forecast = 1 - forecasted_balance
@@ -117,6 +129,8 @@ def generate_report():
     beer_second_table = pd.DataFrame(columns=['Номенклатура', 'Заказ кег'])
     snacks_results = pd.DataFrame(columns=['Номенклатура', 'Остаток', 'Прогноз', 'Прогнозируемый остаток', 'Заказ'])
     snacks_second_table = pd.DataFrame(columns=['Номенклатура', 'Заказ'])
+    other_results = pd.DataFrame(columns=['Номенклатура', 'Остаток', 'Прогноз', 'Прогнозируемый остаток', 'Заказ'])
+    other_second_table = pd.DataFrame(columns=['Номенклатура', 'Заказ'])
 
 
     # Обработка данных
@@ -144,11 +158,17 @@ def generate_report():
             beer_results['Номенклатура'] = beer_results['Номенклатура'].replace("Амбирлэнд Темное", "Темное")
             beer_results['Номенклатура'] = beer_results['Номенклатура'].replace("Амбирлэнд Вишневый крик", "Вайлд Черри")
         # Обработка данных для закусок к пиву
-        if not matching_rows.empty and matching_rows['Категория товара'].str.contains("Закуски к пиву").any():
+        if not matching_rows.empty and matching_rows['Категория товара'].str.contains("Закуски к пиву").any() | matching_rows['Категория товара'].str.contains("Рыба").any():
             total_quantity = matching_rows['Количество товара'].sum()
 
             snacks_result = handle_snacks(nomenclature, stock, total_quantity)
             snacks_results = snacks_results._append(snacks_result, ignore_index=True)
+
+        if not matching_rows.empty and matching_rows['Категория товара'].str.contains("Прочее").any():
+            total_quantity = matching_rows['Количество товара'].sum()
+
+            other_result = handle_other(nomenclature, stock, total_quantity)
+            other_results = other_results._append(other_result, ignore_index=True)
 
     #Вторая таблица для пива
     for index, row in beer_results.iterrows():
@@ -170,14 +190,23 @@ def generate_report():
         else:
             snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(custom_ceil(forecast))} кг."}, ignore_index=True)
 
+    #Вторая таблица для прочего
+    for index, row in other_results.iterrows():
+        nomenclature = row['Номенклатура']
+        forecast = row['Заказ']
+
+        other_second_table = other_second_table._append({other_second_table.columns[0]: nomenclature, other_second_table.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
+
     save_file()
 
-    # Запись двух таблиц в один Excel файл
+    # Запись таблиц в один Excel файл
     with pd.ExcelWriter(report_file_path) as writer:
         beer_results.to_excel(writer, sheet_name="Пиво", index=False)
         beer_second_table.to_excel(writer, sheet_name="Пиво", startrow=len(beer_results) + 3, index=False)
         snacks_results.to_excel(writer, sheet_name="Закуски к пиву", index=False)
         snacks_second_table.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, index=False)
+        other_results.to_excel(writer, sheet_name="Прочее", index=False)
+        other_second_table.to_excel(writer, sheet_name="Прочее", startrow=len(other_results) + 3, index=False)
         message_result = tk.Label(window, text=f"Файл {report_file_path.split('/')[-1]} загружен", foreground='blue')
         message_result.place(x=185, y=175)
 
