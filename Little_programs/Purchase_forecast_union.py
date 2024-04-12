@@ -81,7 +81,6 @@ def load_sales_file():
         store_combobox['values'] = stores[1::]
         store_combobox.set(stores[1])  # Устанавливаем первый магазин по умолчанию
 
-        message_error.place(x=185, y=70)
         message_error.config(text=" ")
     else:
         message_label_sales.config(text="Файл не выбран", foreground='red')
@@ -99,7 +98,6 @@ def load_residuals_file():
         message_label_residuals.config(text=f"{os.path.basename(residuals_file_path)}", foreground='green')
         message_error.config(text=" ")
     else:
-        message_error.place(x=185, y=70)
         message_label_residuals.config(text="Файл не выбран", foreground='red')
         residuals_file_path = None
 
@@ -144,15 +142,12 @@ def generate_report():
 
     # Проверка на заполнение файлов
     if sales_file_path is None and residuals_file_path is None:
-        message_error.place(x=185, y=70)
         message_error.config(text="Файлы не загружены")
         return
     elif sales_file_path is None:
-        message_error.place(x=185, y=70)
         message_error.config(text="Продажи не загружены")
         return
     elif residuals_file_path is None:
-        message_error.place(x=185, y=70)
         message_error.config(text="Остатки не загружены")
         return
 
@@ -183,13 +178,11 @@ def generate_report():
     try:
         start_date_dt = datetime.datetime.strptime(start_date_str, "%d.%m.%Y %H:%M:%S")
     except ValueError:
-        message_error.place(x=125, y=70)
         message_error.config(text="Введен неправильный формат начальной даты")
 
     try:
         end_date_dt = datetime.datetime.strptime(end_date_str, "%d.%m.%Y %H:%M:%S")
     except ValueError:
-        message_error.place(x=125, y=70)
         message_error.config(text="Введен неправильный формат конечной даты")
 
     start_date_str = start_date_dt.strftime("%d.%m.%Y %H:%M:%S").format()
@@ -274,7 +267,7 @@ def generate_report():
         other_results.to_excel(writer, sheet_name="Прочее", index=False)
         other_second_table.to_excel(writer, sheet_name="Прочее", startrow=len(other_results) + 3, index=False)
         message_result = tk.Label(window, text=f"Файл {report_file_path.split('/')[-1]} загружен", foreground='blue')
-        message_result.place(x=185, y=240)
+        message_result.place(relx=0.5, rely=0.72, anchor="center")
 
     open_file (report_file_path)
 
@@ -287,7 +280,7 @@ message_label_sales.place(x=65, y=40)
 message_label_residuals = tk.Label(window, text="Файл не выбран")
 message_label_residuals.place(x=340, y=40)
 message_error = tk.Label(window, foreground='red')
-
+message_error.place(relx=0.5, rely=0.23, anchor="center")
 
 stores = tk.Label(window, text="Магазин")
 stores.place(x=102, y=100)
@@ -296,14 +289,14 @@ store_combobox.place(x=105, y=120, width=300)
 
 
 start_date_label = tk.Label(window, text="Начальная дата (в формате 29.03.2002)\nБудет поиск c 00:00:00")
-start_date_label.place(x=10, y=175)
+start_date_label.place(x=10, y=155)
 start_date = ttk.Entry(window)
-start_date.place(x=55, y=220)
+start_date.place(x=55, y=200)
 
 end_date_label = tk.Label(window, text="Конечная дата (в формате 29.03.2002)\nБудет поиск по 23:59:59")
-end_date_label.place(x=280, y=175)
+end_date_label.place(x=280, y=155)
 end_date = ttk.Entry(window)
-end_date.place(x=320, y=220)
+end_date.place(x=320, y=200)
 
 
 btn_sales = tk.Button(window, text="Загрузить файл с продажами", command=load_sales_file)
@@ -311,6 +304,6 @@ btn_residuals = tk.Button(window, text="Загрузить файл с оста�
 btn_sales.place(x=25, y=10)
 btn_residuals.place(x=300, y=10)
 btn_generate = tk.Button(window, text="Сгенерировать отчет", command=generate_report, background='#3498db', foreground='#FFFFFF', font='Arial 13 bold', borderwidth=0)
-btn_generate.place(x=105, y=280, height=50, width=300)
+btn_generate.place(relx=0.5, rely=0.85, anchor="center", height=50, width=300)
 
 window.mainloop()
