@@ -33,9 +33,11 @@ def handle_beer(nomenclature, stock, total_quantity):
 
 def handle_snacks(nomenclature, stock, total_quantity):
     forecasted_balance = stock - total_quantity
-    if (forecasted_balance < 600 and not forecasted_balance.is_integer()):
-        forecast = 1 - forecasted_balance
-    elif (forecasted_balance >= 600 and not forecasted_balance.is_integer()):
+    if (forecasted_balance < 0.600 and not forecasted_balance.is_integer()):
+        forecast = 1 - abs(forecasted_balance)
+    if (forecasted_balance < 0 and not forecasted_balance.is_integer()):
+        forecast = abs(forecasted_balance)
+    elif (forecasted_balance >= 0.600 and not forecasted_balance.is_integer()):
         forecast = 0
     elif (forecasted_balance.is_integer()):
         forecast = 0
@@ -182,8 +184,9 @@ def generate_report():
         for index, row in results.iterrows():
             nomenclature = row['Номенклатура']
             forecast = row['Заказ']
+            forecasted_balance = row['Прогнозируемый остаток']
 
-            if forecast == 0:
+            if forecasted_balance.is_integer():
                 second_table = second_table._append({second_table.columns[0]: nomenclature, second_table.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
             else:
                 second_table = second_table._append({second_table.columns[0]: nomenclature, second_table.columns[1]: f"{int(custom_ceil(forecast))} кг."}, ignore_index=True)
