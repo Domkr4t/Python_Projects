@@ -242,6 +242,7 @@ def generate_report():
 
             beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Домашнее", "Афанасий")
             beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Бавария", "Пражское")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Доброе", "Лакинское")
 
 
         # Обработка данных для закусок к пиву
@@ -273,6 +274,8 @@ def generate_report():
             beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
         elif nomenclature == "Афанасий":
             beer_second_table_birger = beer_second_table_birger._append({beer_second_table_birger.columns[0]: nomenclature, beer_second_table_birger.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
+        elif nomenclature == "Лакинское":
+            beer_second_table_birger = beer_second_table_birger._append({beer_second_table_birger.columns[0]: nomenclature, beer_second_table_birger.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
         elif nomenclature == "Пражское":
             beer_second_table_birger = beer_second_table_birger._append({beer_second_table_birger.columns[0]: nomenclature, beer_second_table_birger.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
         elif nomenclature == "Вайлд Черри":
@@ -285,7 +288,7 @@ def generate_report():
         nomenclature = row["Номенклатура"]
         forecast = row["Заказ"]
         forecasted_balance = row["Прогнозируемый остаток"]
-        kaspi_snacks = ["Бобы жареные соль", "Бобы жареные чеснок", "Гренки Волнистые с чесноком 75г", "Гренки Живые с чесноком", "Иваси тушка х/к", "Киперс х/к", "Корюшка без икры", "Корюшка с икрой", "Креветка сушеная с солью  40г", "Креветка сушеная с чесноком и укропом 40г", "Снэки рисовые сладко-острые 50г", "Снэки рисовые сырные 50г", "Спинка леща", "Хвосты форели х/к", "Черноморская креветка острая 25г", "Черноморская креветка с укропом 25г", "Черноморская креветка сушеная 25г", "Юкола горбуши"]
+        kaspi_snacks = ["Бобы жареные соль", "Бобы жареные чеснок", "Гренки Волнистые с чесноком 75г", "Гренки Живые с чесноком", "Иваси тушка х/к", "Киперс х/к", "Корюшка без икры", "Корюшка с икрой", "Креветка сушеная с солью  40г", "Креветка сушеная с чесноком и укропом 40г", "Снэки рисовые сладко-острые 50г", "Снэки рисовые сырные 50г", "Спинка леща", "Хвосты форели х/к", "Черноморская креветка острая 25г", "Черноморская креветка с укропом 25г", "Черноморская креветка сушеная 25г", "Юкола горбуши", "Гренки Барные с томатом,чесноком и зеленью 70г", "Говядина Гриль сушеная 50гр", "Индейка Гриль сушеная 50гр", "Свинина Гриль сушеная 50гр"]
         sigma_snacks = ["Сиг г/к"]
 
         if forecasted_balance.is_integer():
