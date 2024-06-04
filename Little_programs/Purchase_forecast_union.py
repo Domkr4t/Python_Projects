@@ -161,7 +161,7 @@ def generate_report():
         return
 
     # Чтение данных из первого файла (с продажами)
-    sales = pd.read_excel(f"{sales_file_path}", skiprows=4, usecols=[0, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17])
+    sales = pd.read_excel(f"{sales_file_path}", skiprows=4, usecols=[0, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
     sales_column_names = ["Магазин", "Дата и время", "Id чека", "Диск карт", "Владелец карты", "Номер телефона", "Категория товара", "Группа товара", "Номенклатура", "Сумма продаж", "Количество товара", "Остаток на складе", "Сумма скидки", "Себестоимость продаж", "Валовая прибыль"]
     sales.columns = sales_column_names
 
@@ -172,11 +172,12 @@ def generate_report():
 
     # Создание "шапок" для таблиц
     beer_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Заказ кег", "Остаток литров"])
-    beer_second_table = pd.DataFrame(columns=["Номенклатура", "Заказ кег"])
-    beer_second_table_birger = pd.DataFrame(columns=["Номенклатура", "Заказ кег"])
+    beer_second_table = pd.DataFrame(columns=["Номенклатура(Воронеж)", "Заказ кег"])
+    beer_second_table_birger = pd.DataFrame(columns=["Номенклатура(Биргер)", "Заказ кег"])
     snacks_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
-    snacks_second_table = pd.DataFrame(columns=["Номенклатура", "Заказ"])
-    snacks_second_table_kaspi = pd.DataFrame(columns=["Номенклатура", "Заказ"])
+    snacks_second_table = pd.DataFrame(columns=["Номенклатура(Мерка)", "Заказ"])
+    snacks_second_table_kaspi = pd.DataFrame(columns=["Номенклатура(Каспи)", "Заказ"])
+    snacks_second_table_sigma = pd.DataFrame(columns=["Номенклатура(Сиг)", "Заказ"])
     other_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
     other_second_table = pd.DataFrame(columns=["Номенклатура", "Заказ"])
 
@@ -285,15 +286,20 @@ def generate_report():
         forecast = row["Заказ"]
         forecasted_balance = row["Прогнозируемый остаток"]
         kaspi_snacks = ["Бобы жареные соль", "Бобы жареные чеснок", "Гренки Волнистые с чесноком 75г", "Гренки Живые с чесноком", "Иваси тушка х/к", "Киперс х/к", "Корюшка без икры", "Корюшка с икрой", "Креветка сушеная с солью  40г", "Креветка сушеная с чесноком и укропом 40г", "Снэки рисовые сладко-острые 50г", "Снэки рисовые сырные 50г", "Спинка леща", "Хвосты форели х/к", "Черноморская креветка острая 25г", "Черноморская креветка с укропом 25г", "Черноморская креветка сушеная 25г", "Юкола горбуши"]
+        sigma_snacks = ["Сиг г/к"]
 
         if forecasted_balance.is_integer():
             if nomenclature in kaspi_snacks:
                 snacks_second_table_kaspi = snacks_second_table_kaspi._append({snacks_second_table_kaspi.columns[0]: nomenclature, snacks_second_table_kaspi.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
+            elif nomenclature in sigma_snacks:
+                snacks_second_table_sigma = snacks_second_table_sigma._append({snacks_second_table_sigma.columns[0]: nomenclature, snacks_second_table_sigma.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
             else:
                 snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
         else:
             if nomenclature in kaspi_snacks:
                 snacks_second_table_kaspi = snacks_second_table_kaspi._append({snacks_second_table_kaspi.columns[0]: nomenclature, snacks_second_table_kaspi.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
+            elif nomenclature in sigma_snacks:
+                snacks_second_table_sigma = snacks_second_table_sigma._append({snacks_second_table_sigma.columns[0]: nomenclature, snacks_second_table_sigma.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
             else:
                 snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
 
@@ -315,6 +321,7 @@ def generate_report():
         snacks_results.to_excel(writer, sheet_name="Закуски к пиву", index=False)
         snacks_second_table.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, index=False)
         snacks_second_table_kaspi.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, startcol=3, index=False)
+        snacks_second_table_sigma.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, startcol=6, index=False)
         other_results.to_excel(writer, sheet_name="Прочее", index=False)
         other_second_table.to_excel(writer, sheet_name="Прочее", startrow=len(other_results) + 3, index=False)
         message_result = tk.Label(window, text="", foreground="blue")
