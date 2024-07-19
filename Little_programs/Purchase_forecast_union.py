@@ -43,6 +43,7 @@ def handle_beer(nomenclature, stock, total_quantity):
 # Функция для обработки закусок к пиву
 def handle_snacks(nomenclature, stock, total_quantity):
     forecasted_balance = stock - total_quantity
+
     if (forecasted_balance < 0.600 and not forecasted_balance.is_integer()):
         forecast = 1 - abs(forecasted_balance)
     if (forecasted_balance < 0 and not forecasted_balance.is_integer()):
@@ -50,7 +51,17 @@ def handle_snacks(nomenclature, stock, total_quantity):
     elif (forecasted_balance >= 0.600 and not forecasted_balance.is_integer()):
         forecast = 0
     elif (forecasted_balance.is_integer()):
-        forecast = 0
+        if nomenclature == "Гренки Волнистые с чесноком 75гр":
+            if forecasted_balance >= 5:
+                forecast = 0
+            elif forecasted_balance < 5:
+                forecast = 14
+
+        if forecasted_balance >= 5:
+            forecast = 0
+        elif forecasted_balance < 5:
+            forecast = 5
+
 
     return {"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": total_quantity, "Прогнозируемый остаток": forecasted_balance, "Заказ": abs(forecast)}
 
@@ -58,12 +69,14 @@ def handle_snacks(nomenclature, stock, total_quantity):
 # Функция для обработки прочего
 def handle_other(nomenclature, stock, total_quantity):
     forecasted_balance = stock - total_quantity
-    if (forecasted_balance < 600 and not forecasted_balance.is_integer()):
-        forecast = 1 - forecasted_balance
-    elif (forecasted_balance >= 600 and not forecasted_balance.is_integer()):
+    if nomenclature == "Банка 1л":
+        forecast = math.ceil((total_quantity + 12)/12)
+    elif nomenclature == "Банка 2л" or nomenclature == "Банка 3л":
+        forecast = math.ceil((total_quantity + 6)/6)
+    elif nomenclature == "Крышка":
         forecast = 0
-    elif (forecasted_balance.is_integer()):
-        forecast = 0
+    else:
+        return None
 
     return {"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": total_quantity, "Прогнозируемый остаток": forecasted_balance, "Заказ": abs(forecast)}
 
@@ -200,6 +213,15 @@ def generate_report():
     start_date_str = start_date_dt.strftime("%d.%m.%Y %H:%M:%S").format()
     end_date_str = end_date_dt.strftime("%d.%m.%Y %H:%M:%S").format()
 
+
+    all_nomenclatures_from_sales = set(sales["Номенклатура"].unique())
+    residuals_nomenclatures = set(residuals["Номенклатура"])
+    missing_in_residuals = all_nomenclatures_from_sales - residuals_nomenclatures
+
+    for missing_nomenclature in missing_in_residuals:
+        new_row = {'Номенклатура': missing_nomenclature, 'Остаток': 0}
+        residuals = residuals._append(new_row, ignore_index=True)
+
     # Обработка данных
     for index, row in residuals.iterrows():
 
@@ -310,9 +332,20 @@ def generate_report():
     for index, row in other_results.iterrows():
         nomenclature = row["Номенклатура"]
         forecast = row["Заказ"]
+        banki = ["Банка 1л", "Банка 2л", "Банка 3л", "Крышка"]
 
-        other_second_table = other_second_table._append({other_second_table.columns[0]: nomenclature, other_second_table.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
 
+        if nomenclature in banki:
+            other_second_table = other_second_table._append({other_second_table.columns[0]: nomenclature, other_second_table.columns[1]: f"{int(forecast)} уп."}, ignore_index=True)
+        else:
+            other_second_table = other_second_table._append({other_second_table.columns[0]: nomenclature, other_second_table.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
+
+
+    static_nomenclature = ["Пакет плотный -", "Пакет майка -", "Перчатки одноразовые -", "Пакет фасовочный -", "Контейнер черный новый -","Контейнер 250 мл. -", "Контейнер 500 мл. -", "Контейнер 1000 мл. -", "Мусорные пакеты большие -", "Мусорные пакеты маленькие на завязке  -", "Лента узкая -", "Стакан 0.5 -", "Ручка для банки -"]
+
+    for static in static_nomenclature:
+            new_row = {'Номенклатура': static, 'Заказ': "уп."}
+            other_second_table = other_second_table._append(new_row, ignore_index=True)
 
     save_file()
 
