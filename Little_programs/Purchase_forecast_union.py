@@ -186,7 +186,6 @@ def generate_report():
     # Создание "шапок" для таблиц
     beer_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Заказ кег", "Остаток литров"])
     beer_second_table = pd.DataFrame(columns=["Номенклатура(Воронеж)", "Заказ кег"])
-    beer_second_table_birger = pd.DataFrame(columns=["Номенклатура(Биргер)", "Заказ кег"])
     snacks_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
     snacks_second_table = pd.DataFrame(columns=["Номенклатура(Мерка)", "Заказ"])
     snacks_second_table_kaspi = pd.DataFrame(columns=["Номенклатура(Каспи)", "Заказ"])
@@ -241,30 +240,20 @@ def generate_report():
             beer_result = handle_beer(nomenclature, stock, total_quantity)
             beer_results = beer_results._append(beer_result, ignore_index=True)
             # Замена именований
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Белое", "Боровское белое")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Жигулевское", "Жигулевское Ф")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Вишневый крик", "Вайлд Черри")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Имбирный эль", "Крейзи Джинджер")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Крепкое", "Империал НФ")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Легкое", "Заправское")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Особое", "Всесоюзное")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Пилснер нефильтрованное", "Пилснер НФ")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Пилснер фильтрованное", "Пилснер Ф")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Пшеничное", "Вайс канцлер НФ")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Светлое нефильтрованное", "Боровское светлое Н/Ф")
-
-            if selected_store == "16_Долгопрудный_Лихачевский68":
-                beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Светлое фильтрованное", "Бундес Ф")
-            else:
-                beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Светлое фильтрованное", "Боровское светлое Ф")
-
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Спринг", "Спринг лагер")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Темное", "Боровское темное Ф")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Фирменное", "Боровское урожайное")
-
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Домашнее", "Афанасий")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Бавария", "Пражское")
-            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Амбирлэнд Доброе", "Лакинское")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Жигулёвское", "Жигулёвское Ф")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Светлое НФ", "Боровское светлое НФ")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Тёмное", "Боровское тёмное Ф")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Пилснер Ф", "Пилснер Ф")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Пилснер НФ", "Пилснер НФ")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Светлое Ф", "Бундес Ф")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Пшеничное", "Вайс канцлер НФ")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Вишнёвый крик", "Вайлд Черри")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Хеллес", "Боровское урожайное")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Крепкое", "Империал канцлер НФ")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Лёгкое", "Домашнее")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("IPA", "Хмельзилла ИПА НФ")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("Грейпфрутовый эль", "Леди на велосипеде")
+            beer_results["Номенклатура"] = beer_results["Номенклатура"].replace("APA", "Бирконг НФ АРА")
 
 
         # Обработка данных для закусок к пиву
@@ -286,46 +275,47 @@ def generate_report():
         nomenclature = row["Номенклатура"]
         forecast = row["Заказ кег"]
 
-        if nomenclature == "Пилснер НФ":
-            beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
-        elif nomenclature == "Пилснер Ф":
-            beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
-        elif nomenclature == "Жигулевское Ф":
-            beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
-        elif nomenclature == "Квас":
-            beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
-        elif nomenclature == "Афанасий":
-            beer_second_table_birger = beer_second_table_birger._append({beer_second_table_birger.columns[0]: nomenclature, beer_second_table_birger.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
-        elif nomenclature == "Лакинское":
-            beer_second_table_birger = beer_second_table_birger._append({beer_second_table_birger.columns[0]: nomenclature, beer_second_table_birger.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
-        elif nomenclature == "Пражское":
-            beer_second_table_birger = beer_second_table_birger._append({beer_second_table_birger.columns[0]: nomenclature, beer_second_table_birger.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
-        elif nomenclature == "Вайлд Черри":
-            beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*20"}, ignore_index=True)
-        else:
-            beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
+        voronezsh_snacks = ["Жигулёвское", "Светлое НФ", "Тёмное", "Пилснер Ф", "Пилснер НФ", "Светлое Ф", "Пшеничное", "Вишнёвый крик", "Амбирлэнд Фирменное", "Крепкое", "Лёгкое", "IPA", "Грейпфрутовый эль", "APA", "Вице Канцлер б/а  0,45"]
+
+        if nomenclature in voronezsh_snacks:
+            if nomenclature == "Пилснер НФ":
+                beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
+            elif nomenclature == "Пилснер Ф":
+                beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
+            elif nomenclature == "Жигулевское Ф":
+                beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
+            elif nomenclature == "Квас":
+                beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
+            elif nomenclature == "Вайлд Черри":
+                beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*20"}, ignore_index=True)
+            else:
+                beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
 
     #Вторая таблица для закусок к пиву
     for index, row in snacks_results.iterrows():
         nomenclature = row["Номенклатура"]
         forecast = row["Заказ"]
         forecasted_balance = row["Прогнозируемый остаток"]
-        kaspi_snacks = ["Бобы жареные соль", "Бобы жареные чеснок", "Гренки Волнистые с чесноком 75г", "Гренки Живые с чесноком", "Иваси тушка х/к", "Киперс х/к", "Корюшка без икры", "Корюшка с икрой", "Креветка сушеная с солью  40г", "Креветка сушеная с чесноком и укропом 40г", "Снэки рисовые сладко-острые 50г", "Снэки рисовые сырные 50г", "Спинка леща", "Хвосты форели х/к", "Черноморская креветка острая 25г", "Черноморская креветка с укропом 25г", "Черноморская креветка сушеная 25г", "Юкола горбуши", "Гренки Барные с томатом,чесноком и зеленью 70г", "Говядина Гриль сушеная 50гр", "Индейка Гриль сушеная 50гр", "Свинина Гриль сушеная 50гр"]
+
+        merka_snacks = ["Гренки Бородинские Чеснок", "Гренки по-деревенски чеснок", "Гренки тайский соус", "Гренки багет Мексиканский микс", "Гренки красная икра", "Гренки томат-зелень", "Гренки чеснок", "Гренки сыр", "Ломтики курицы", "Ломтики говядины", "Чипсы мясные свинина", "Чипсы мясные курица", "Курица Халапеньо", "Чипсы мясные индейка гриль", "Фисташки", "Миндаль жареный соленый", "Ореховый микс", "Японские снэки", "Арахис семга-сыр", "Арахис в глазури сметана-зелень", "Арахис в глазури сыр", "Арахис шашлык", "Арахис семга - сыр", "Арахис соль", "Арахис сыр-чеснок", "Арахис в глазури васаби", "Сыр Косичка", "Сыр Охотник", 'Сыр "Бочонок"', "Сыр Джил", "Семечки с солью 130г", "Уши свиные в ассортименте 90г", "Чипсы Мистер Потато оригинальные 40г", "Чипсы Мистер Потато сметана/лук 40г", "Чипсы Мистер Потато барбекю 40г", "Чипсы Мистер Потато острые 40г", "Лещ", "Камбала с икрой", "Камбала Ёрш", "Камбала без икры", "Пелядь", "Чехонь", "Плотва", "Синец", "Вобла", "Мойва вяленая", "Сырок", "Щука", "Вобла Астраханская", "Рыбец", "Тарань", "Палочки кеты", "Мясо краба", "Желтый полосатик", "Икра минтая", "Осьминог", "Мясо краба по-шанхайски", "Кольца кальмара", "Палочки горбуши", "Кольца кальмара по-шанхайски", "Стружка кальмара", "Мидии", "Ассорти рыбное", "Стружка кальмара по-шанхайски", "Икра воблы", "Хот-тейс", "Камбалка деликатесная", "Колбаски мясные со вкусом чили", "Колбаски мясные с чесноком", "Соломка форели", "Таранка с перцем", "Щупальцы кальмара", "Вомер х/к", "Жерех х/к", "Теша горбуши х/к", "Лещ х/к]"]
+
+        kaspi_snacks = ["Креветка сушеная с чесноком и укропом 40г", "Креветка сушеная с солью  40г", "Гренки Волнистые с чесноком 75г", "Гренки Барные с томатом,чесноком и зеленью 70г", "Корюшка без икры", "Корюшка с икрой", "Иваси тушка х/к", "Киперс х/к", "Гренки Живые с чесноком", "Соломка семги", "Соломка воблы"]
+
         sigma_snacks = ["Сиг г/к"]
 
         if forecasted_balance.is_integer():
             if nomenclature in kaspi_snacks:
-                snacks_second_table_kaspi = snacks_second_table_kaspi._append({snacks_second_table_kaspi.columns[0]: nomenclature, snacks_second_table_kaspi.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
+                snacks_second_table_kaspi = snacks_second_table_kaspi._append({snacks_second_table_kaspi.columns[0]: nomenclature, snacks_second_table_kaspi.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
             elif nomenclature in sigma_snacks:
-                snacks_second_table_sigma = snacks_second_table_sigma._append({snacks_second_table_sigma.columns[0]: nomenclature, snacks_second_table_sigma.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
-            else:
-                snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(forecast*1000)} шт."}, ignore_index=True)
+                snacks_second_table_sigma = snacks_second_table_sigma._append({snacks_second_table_sigma.columns[0]: nomenclature, snacks_second_table_sigma.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
+            elif nomenclature in merka_snacks:
+                snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
         else:
             if nomenclature in kaspi_snacks:
                 snacks_second_table_kaspi = snacks_second_table_kaspi._append({snacks_second_table_kaspi.columns[0]: nomenclature, snacks_second_table_kaspi.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
             elif nomenclature in sigma_snacks:
                 snacks_second_table_sigma = snacks_second_table_sigma._append({snacks_second_table_sigma.columns[0]: nomenclature, snacks_second_table_sigma.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
-            else:
+            elif nomenclature in merka_snacks:
                 snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
 
     #Вторая таблица для прочего
@@ -353,7 +343,6 @@ def generate_report():
     with pd.ExcelWriter(report_file_path) as writer:
         beer_results.to_excel(writer, sheet_name="Пиво", index=False)
         beer_second_table.to_excel(writer, sheet_name="Пиво", startrow=len(beer_results) + 3, index=False)
-        beer_second_table_birger.to_excel(writer, sheet_name="Пиво", startrow=len(beer_results) + 3, startcol=3, index=False)
         snacks_results.to_excel(writer, sheet_name="Закуски к пиву", index=False)
         snacks_second_table.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, index=False)
         snacks_second_table_kaspi.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, startcol=3, index=False)
