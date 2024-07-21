@@ -70,11 +70,12 @@ def handle_snacks(nomenclature, stock, total_quantity):
 def handle_other(nomenclature, stock, total_quantity):
     forecasted_balance = stock - total_quantity
     if nomenclature == "Банка 1л":
-        forecast = math.ceil((total_quantity + 12)/12)
+        forecast = math.ceil((total_quantity + 24)/12)
     elif nomenclature == "Банка 2л" or nomenclature == "Банка 3л":
-        forecast = math.ceil((total_quantity + 6)/6)
+        forecast = math.ceil((total_quantity + 12)/6)
     elif nomenclature == "Крышка":
-        forecast = 0
+        if forecasted_balance < 200:
+            forecast = 1
     else:
         return None
 
