@@ -76,6 +76,8 @@ def handle_other(nomenclature, stock, total_quantity):
     elif nomenclature == "Крышка":
         if forecasted_balance < 200:
             forecast = 1
+        else:
+            forecast = 0
     else:
         return None
 
