@@ -3,6 +3,7 @@ import os
 import math
 import platform
 import datetime
+import csv
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import ttk
@@ -23,11 +24,11 @@ def custom_ceil(number):
 
 # Функция для обработки пива
 def handle_beer(nomenclature, stock, total_quantity):
-    nomenclature_50 = ["Амбирлэнд Пилснер нефильтрованное", "Амбирлэнд Пилснер фильтрованное", "Амбирлэнд Жигулевское", "Квас"]
+    nomenclature_50 = ["Пилснер НФ", "Пилснер Ф", "Жигулёвское", "Квас"]
 
     if nomenclature in nomenclature_50:
         forecast = math.floor((stock - total_quantity) / 50)
-    elif nomenclature == "Амбирлэнд Вишневый крик":
+    elif nomenclature == "Вишнёвый крик":
         forecast = math.floor((stock - total_quantity) / 20)
     else:
         forecast = math.floor((stock - total_quantity) / 30)
@@ -82,6 +83,36 @@ def handle_other(nomenclature, stock, total_quantity):
         return None
 
     return {"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": total_quantity, "Прогнозируемый остаток": forecasted_balance, "Заказ": abs(forecast)}
+
+
+def text_for_shop():
+    if selected_store == "6_Люберцы_3-е Почтовое отделение74":
+        text = "Добрый день.\nЗаказ ИП Аганина,\nулица 3-е Почтовое Отделение 74,  Люберцы,"
+    elif selected_store == "16_Долгопрудный_Лихачевский68":
+        text = "Добрый день.\nЗаказ ИП Аганина,\nЛихачёвский проспект 68, Долгопрудный,"
+    elif selected_store == "5_Балашиха_Фадеева3":
+        text = "Добрый день.\nЗаказ ИП Петрова, \nУл.Фадеева, 3А, Балашиха,"
+    elif selected_store == "7_Балашиха_Свердлова25":
+        text = "Добрый день.\nЗаказ ИП Аганина, \nУл.Свердлова25а, Балашиха,"
+    elif selected_store == "4_Электросталь_Ленина15":
+        text = "Добрый день.\nЗаказ ИП Петрова,\nпроспект Ленина, 15, Электросталь, "
+    elif selected_store == "3_Электросталь_Ялагина11":
+        text = "Добрый день.\nЗаказ ИП Аганина,\nЛихачёвский проспект 68, Долгопрудный,"
+    elif selected_store == "9_Балашиха_Советский6/17":
+        text = "Добрый день.\nЗаказ ИП Петрова,\nУл.Советская6/17, Балашиха,"
+    elif selected_store == "14_Егорьевск_Советская191":
+        text = "Добрый день.\nЗаказ ИП Аганина,\nСоветская улица, 191, Егорьевск,"
+    elif selected_store == "10_Коломна_Советская5":
+        text = "Добрый день.\nЗаказ ИП Петрова \nУл.Советская площадь, 5А, Коломна,"
+    elif selected_store == "12_Фрязино_Мира8":
+        text = "Добрый день.\nЗаказ ИП Петрова, \nПр-кт Мира 8, Фрязино,"
+    elif selected_store == "1_Дрезна_Южная19А":
+        text = "Добрый день.\nЗаказ ИП Петрова,\nЮжная улица, 19А, Дрезна,"
+    elif selected_store == "3_Электросталь_Ялагина11":
+        text = "Добрый день.\nЗаказ ИП Петрова,\nУл.Ялагина, 11, Электросталь,"
+
+
+    return {"Шапка для заказа": text}
 
 
 # Загрузка файла с продажами
@@ -195,6 +226,7 @@ def generate_report():
     snacks_second_table_sigma = pd.DataFrame(columns=["Номенклатура(Сиг)", "Заказ"])
     other_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
     other_second_table = pd.DataFrame(columns=["Номенклатура", "Заказ"])
+    text_shop = pd.DataFrame(columns=["Шапка для заказа"])
 
 
     selected_store = store_combobox.get()
@@ -360,18 +392,23 @@ def generate_report():
             new_row = {'Номенклатура': static, 'Заказ': "уп."}
             other_second_table = other_second_table._append(new_row, ignore_index=True)
 
+    text_shop = text_shop._append(text_for_shop(), ignore_index=True)
+
     save_file()
 
     # Запись таблиц в один Excel файл
     with pd.ExcelWriter(report_file_path) as writer:
         beer_results.to_excel(writer, sheet_name="Пиво", index=False)
         beer_second_table.to_excel(writer, sheet_name="Пиво", startrow=len(beer_results) + 3, index=False)
+        text_shop.to_excel(writer, sheet_name="Пиво", startcol=6, index=False)
         snacks_results.to_excel(writer, sheet_name="Закуски к пиву", index=False)
         snacks_second_table.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, index=False)
         snacks_second_table_kaspi.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, startcol=3, index=False)
         snacks_second_table_sigma.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, startcol=6, index=False)
+        text_shop.to_excel(writer, sheet_name="Закуски к пиву", startcol=6, index=False)
         other_results.to_excel(writer, sheet_name="Прочее", index=False)
         other_second_table.to_excel(writer, sheet_name="Прочее", startrow=len(other_results) + 3, index=False)
+        text_shop.to_excel(writer, sheet_name="Прочее", startcol=6, index=False)
         message_result = tk.Label(window, text="", foreground="blue")
         message_result = tk.Label(window, text=f"Файл {report_file_path.split("/")[-1]} загружен", foreground="blue")
         message_result.place(relx=0.5, rely=0.72, anchor="center")
