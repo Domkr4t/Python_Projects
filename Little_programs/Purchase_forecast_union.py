@@ -14,6 +14,18 @@ residuals_file_path = None
 report_file_path = None
 selected_store = None
 
+all_beer = ["Жигулёвское", "Светлое НФ", "Тёмное", "Пилснер Ф", "Пилснер НФ", "Светлое Ф", "Пшеничное", "Вишнёвый крик", "Хеллес", "Крепкое", "Лёгкое", "IPA", "Грейпфрутовый эль", "APA", "Квас Воронеж"]
+
+merka_snacks = ["Гренки Бородинские Чеснок", "Гренки по-деревенски чеснок", "Гренки тайский соус", "Гренки багет Мексиканский микс", "Гренки красная икра", "Гренки томат-зелень", "Гренки чеснок", "Гренки сыр", "Ломтики курицы", "Ломтики говядины", "Чипсы мясные свинина", "Чипсы мясные курица", "Курица Халапеньо", "Чипсы мясные индейка гриль", "Фисташки", "Миндаль жареный соленый", "Ореховый микс", "Японские снэки", "Арахис семга-сыр", "Арахис в глазури сметана-зелень", "Арахис в глазури сыр", "Арахис шашлык", "Арахис семга - сыр", "Арахис соль", "Арахис сыр-чеснок", "Арахис в глазури васаби", "Сыр Косичка", "Сыр Охотник", 'Сыр "Бочонок"', "Сыр Джил", "Семечки с солью 130г", "Уши свиные в ассортименте 90г", "Чипсы Мистер Потато оригинальные 40г", "Чипсы Мистер Потато сметана/лук 40г", "Чипсы Мистер Потато барбекю 40г", "Чипсы Мистер Потато острые 40г", "Лещ", "Камбала с икрой", "Камбала Ёрш", "Камбала без икры", "Пелядь", "Чехонь", "Плотва", "Синец", "Вобла", "Мойва вяленая", "Сырок", "Щука", "Вобла Астраханская", "Рыбец", "Тарань", "Палочки кеты", "Мясо краба", "Желтый полосатик", "Икра минтая", "Осьминог", "Мясо краба по-шанхайски", "Кольца кальмара", "Палочки горбуши", "Кольца кальмара по-шанхайски", "Стружка кальмара", "Мидии", "Ассорти рыбное", "Стружка кальмара по-шанхайски", "Икра воблы", "Хот-тейс", "Камбалка сушеная", "Колбаски мясные со вкусом чили", "Колбаски мясные с чесноком", "Соломка форели", "Таранка с перцем", "Щупальцы кальмара", "Вомер х/к", "Жерех х/к", "Теша горбуши х/к", "Лещ х/к]"]
+
+kaspi_snacks = ["Креветка сушеная с чесноком и укропом 40г", "Креветка сушеная с солью  40г", "Гренки Волнистые с чесноком 75г", "Гренки Барные с томатом,чесноком и зеленью 70г", "Корюшка без икры", "Корюшка с икрой", "Иваси тушка х/к", "Киперс х/к", "Гренки Живые с чесноком", "Соломка семги", "Соломка воблы"]
+
+sigma_snacks = ["Сиг г/к"]
+
+banki = ["Банка 1л", "Банка 2л", "Банка 3л", "Крышка"]
+
+static_nomenclature = ["Пакет плотный -", "Пакет майка -", "Перчатки одноразовые -", "Пакет фасовочный -", "Контейнер черный новый -","Контейнер 250 мл. -", "Контейнер 500 мл. -", "Контейнер 1000 мл. -", "Мусорные пакеты большие -", "Мусорные пакеты маленькие на завязке  -", "Лента узкая -", "Стакан 0.5 -", "Ручка для банки -"]
+
 #Функция округления
 def custom_ceil(number):
     if number - int(number) >= 0.15:
@@ -30,6 +42,8 @@ def handle_beer(nomenclature, stock, total_quantity):
         forecast = math.floor((stock - total_quantity) / 50)
     elif nomenclature == "Вишнёвый крик":
         forecast = math.floor((stock - total_quantity) / 20)
+    elif nomenclature == "Вице Канцлер б/а  0,45":
+        forecast = math.ceil(total_quantity / 12)
     else:
         forecast = math.floor((stock - total_quantity) / 30)
 
@@ -52,16 +66,16 @@ def handle_snacks(nomenclature, stock, total_quantity):
     elif (forecasted_balance >= 0.600 and not forecasted_balance.is_integer()):
         forecast = 0
     elif (forecasted_balance.is_integer()):
-        if nomenclature == "Гренки Волнистые с чесноком 75гр":
+        if nomenclature == "Гренки Волнистые с чесноком 75г":
             if forecasted_balance >= 5:
                 forecast = 0
             elif forecasted_balance < 5:
                 forecast = 14
-
-        if forecasted_balance >= 5:
-            forecast = 0
-        elif forecasted_balance < 5:
-            forecast = 5
+        else:
+            if forecasted_balance >= 5:
+                forecast = 0
+            elif forecasted_balance < 5:
+                forecast = 5
 
 
     return {"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": total_quantity, "Прогнозируемый остаток": forecasted_balance, "Заказ": abs(forecast)}
@@ -87,33 +101,31 @@ def handle_other(nomenclature, stock, total_quantity):
 
 def text_for_shop():
     if selected_store == "6_Люберцы_3-е Почтовое отделение74":
-        text = "Добрый день.\nЗаказ ИП Аганина,\nулица 3-е Почтовое Отделение 74,  Люберцы,"
+        return ["Добрый день.", "Заказ ИП Аганина,", "улица 3-е Почтовое Отделение 74,  Люберцы,"]
     elif selected_store == "16_Долгопрудный_Лихачевский68":
-        text = "Добрый день.\nЗаказ ИП Аганина,\nЛихачёвский проспект 68, Долгопрудный,"
+        return ["Добрый день.", "Заказ ИП Аганина,", "Лихачёвский проспект 68, Долгопрудный,"]
     elif selected_store == "5_Балашиха_Фадеева3":
-        text = "Добрый день.\nЗаказ ИП Петрова, \nУл.Фадеева, 3А, Балашиха,"
+        return ["Добрый день.", "Заказ ИП Петрова, ", "Ул.Фадеева, 3А, Балашиха,"]
     elif selected_store == "7_Балашиха_Свердлова25":
-        text = "Добрый день.\nЗаказ ИП Аганина, \nУл.Свердлова25а, Балашиха,"
+        return ["Добрый день.", "Заказ ИП Аганина, ", "Ул.Свердлова25а, Балашиха,"]
     elif selected_store == "4_Электросталь_Ленина15":
-        text = "Добрый день.\nЗаказ ИП Петрова,\nпроспект Ленина, 15, Электросталь, "
+        return ["Добрый день.", "Заказ ИП Петрова,", "проспект Ленина, 15, Электросталь, "]
     elif selected_store == "3_Электросталь_Ялагина11":
-        text = "Добрый день.\nЗаказ ИП Аганина,\nЛихачёвский проспект 68, Долгопрудный,"
+        return ["Добрый день.", "Заказ ИП Петрова,", "Ул.Ялагина, 11, Электросталь,"]
     elif selected_store == "9_Балашиха_Советский6/17":
-        text = "Добрый день.\nЗаказ ИП Петрова,\nУл.Советская6/17, Балашиха,"
+        return ["Добрый день.", "Заказ ИП Петрова,", "Ул.Советская6/17, Балашиха,"]
     elif selected_store == "14_Егорьевск_Советская191":
-        text = "Добрый день.\nЗаказ ИП Аганина,\nСоветская улица, 191, Егорьевск,"
+        return ["Добрый день.", "Заказ ИП Аганина,", "Советская улица, 191, Егорьевск,"]
     elif selected_store == "10_Коломна_Советская5":
-        text = "Добрый день.\nЗаказ ИП Петрова \nУл.Советская площадь, 5А, Коломна,"
+        return ["Добрый день.", "Заказ ИП Петрова ", "Ул.Советская площадь, 5А, Коломна,"]
     elif selected_store == "12_Фрязино_Мира8":
-        text = "Добрый день.\nЗаказ ИП Петрова, \nПр-кт Мира 8, Фрязино,"
+        return ["Добрый день.", "Заказ ИП Петрова, ", "Пр-кт Мира 8, Фрязино,"]
     elif selected_store == "1_Дрезна_Южная19А":
-        text = "Добрый день.\nЗаказ ИП Петрова,\nЮжная улица, 19А, Дрезна,"
+        return ["Добрый день.", "Заказ ИП Петрова,", "Южная улица, 19А, Дрезна,"]
     elif selected_store == "3_Электросталь_Ялагина11":
-        text = "Добрый день.\nЗаказ ИП Петрова,\nУл.Ялагина, 11, Электросталь,"
+        return ["Добрый день.", "Заказ ИП Петрова,", "Ул.Ялагина, 11, Электросталь,"]
     else:
-        text = "Хз чо за магаз"
-
-    return {"Шапка для заказа": text}
+        return "Хз чо за магаз"
 
 
 # Загрузка файла с продажами
@@ -134,8 +146,8 @@ def load_sales_file():
         stores = [store.strip() for store in stores]
 
         # Обновляем выпадающий список магазинов
-        store_combobox["values"] = stores[0::]
-        store_combobox.set(stores[0])  # Устанавливаем первый магазин по умолчанию
+        store_combobox["values"] = stores[1::]
+        store_combobox.set(stores[1])  # Устанавливаем первый магазин по умолчанию
 
         message_error.config(text=" ")
     else:
@@ -227,7 +239,7 @@ def generate_report():
     snacks_second_table_sigma = pd.DataFrame(columns=["Номенклатура(Сиг)", "Заказ"])
     other_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
     other_second_table = pd.DataFrame(columns=["Номенклатура", "Заказ"])
-    text_shop = pd.DataFrame(columns=["Шапка для заказа"])
+    text_shop = pd.DataFrame()
 
 
     selected_store = store_combobox.get()
@@ -262,7 +274,6 @@ def generate_report():
 
         nomenclature = row["Номенклатура"]
         stock = row["Остаток"]
-
 
         # Находим все записи в файле с продажами, соответствующие текущей магазину и номенклатуре
         sales_data_filtered_shop = sales[sales["Магазин"] == selected_store]
@@ -306,6 +317,13 @@ def generate_report():
             other_result = handle_other(nomenclature, stock, total_quantity)
             other_results = other_results._append(other_result, ignore_index=True)
 
+        if not any(sales_data_filtered_date["Номенклатура"] == nomenclature):
+            if nomenclature in all_beer:
+                beer_results = beer_results._append({"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": 0, "Заказ кег": 0, "Остаток литров": 0}, ignore_index=True)
+            elif nomenclature in merka_snacks or nomenclature in kaspi_snacks or nomenclature in sigma_snacks:
+                snacks_results = snacks_results._append({"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": 0, "Прогнозируемый остаток": 0, "Заказ": 0}, ignore_index=True)
+
+
 
     #Вторая таблица для пива
     for index, row in beer_results.iterrows():
@@ -321,7 +339,7 @@ def generate_report():
         elif selected_store == "7_Балашиха_Свердлова25":
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Домашнее", "Пилснер Ф", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Хмельзилла ИПА НФ", "Леди на велосипеде", "Вайлд Черри", "Квас"]
         elif selected_store == "4_Электросталь_Ленина15":
-            filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Боровское урожайное", "Пилснер Ф", "Домашнее", "Пилснер НФ", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Бирконг НФ АРА", "Леди на велосипеде", "Вайлд Черри", "Квас"]
+            filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Боровское урожайное", "Пилснер Ф", "Пилснер НФ", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Бирконг НФ АРА", "Леди на велосипеде", "Вайлд Черри", "Квас"]
         elif selected_store == "3_Электросталь_Ялагина11":
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Домашнее", "Пилснер Ф", "Бундес Ф", "Вайс канцлер НФ", "Леди на велосипеде", "Квас"]
         elif selected_store == "9_Балашиха_Советский6/17":
@@ -344,6 +362,10 @@ def generate_report():
                 beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*50"}, ignore_index=True)
             elif nomenclature == "Вайлд Черри":
                 beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*20"}, ignore_index=True)
+            elif nomenclature == "Леди на велосипеде":
+                beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*20"}, ignore_index=True)
+            elif nomenclature == "Вице Канцлер б/а  0,45":
+                beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)} уп."}, ignore_index=True)
             else:
                 beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
 
@@ -352,12 +374,6 @@ def generate_report():
         nomenclature = row["Номенклатура"]
         forecast = row["Заказ"]
         forecasted_balance = row["Прогнозируемый остаток"]
-
-        merka_snacks = ["Гренки по-деревенски чеснок", "Гренки тайский соус", "Гренки багет Мексиканский микс", "Гренки красная икра", "Гренки томат-зелень", "Гренки чеснок", "Гренки сыр", "Ломтики курицы", "Ломтики говядины", "Чипсы мясные свинина", "Чипсы мясные курица", "Курица Халапеньо", "Чипсы мясные индейка гриль", "Фисташки", "Миндаль жареный соленый", "Ореховый микс", "Японские снэки", "Арахис семга-сыр", "Арахис в глазури сметана-зелень", "Арахис в глазури сыр", "Арахис шашлык", "Арахис семга - сыр", "Арахис соль", "Арахис сыр-чеснок", "Арахис в глазури васаби", "Сыр Косичка", "Сыр Охотник", 'Сыр "Бочонок"', "Сыр Джил", "Семечки с солью 130г", "Уши свиные в ассортименте 90г", "Чипсы Мистер Потато оригинальные 40г", "Чипсы Мистер Потато сметана/лук 40г", "Чипсы Мистер Потато барбекю 40г", "Чипсы Мистер Потато острые 40г", "Лещ", "Камбала с икрой", "Камбала Ёрш", "Камбала без икры", "Пелядь", "Чехонь", "Плотва", "Синец", "Вобла", "Мойва вяленая", "Сырок", "Щука", "Вобла Астраханская", "Рыбец", "Тарань", "Палочки кеты", "Мясо краба", "Желтый полосатик", "Икра минтая", "Осьминог", "Мясо краба по-шанхайски", "Кольца кальмара", "Палочки горбуши", "Кольца кальмара по-шанхайски", "Стружка кальмара", "Мидии", "Ассорти рыбное", "Стружка кальмара по-шанхайски", "Икра воблы", "Хот-тейс", "Камбалка сушеная", "Колбаски мясные со вкусом чили", "Колбаски мясные с чесноком", "Соломка форели", "Таранка с перцем", "Щупальцы кальмара", "Вомер х/к", "Жерех х/к", "Теша горбуши х/к", "Лещ х/к]"]
-
-        kaspi_snacks = ["Креветка сушеная с чесноком и укропом 40г", "Креветка сушеная с солью  40г", "Гренки Волнистые с чесноком 75г", "Гренки Барные с томатом,чесноком и зеленью 70г", "Корюшка без икры", "Корюшка с икрой", "Иваси тушка х/к", "Киперс х/к", "Гренки Живые с чесноком", "Соломка семги", "Соломка воблы"]
-
-        sigma_snacks = ["Сиг г/к"]
 
         if forecasted_balance.is_integer():
             if nomenclature in kaspi_snacks:
@@ -378,16 +394,12 @@ def generate_report():
     for index, row in other_results.iterrows():
         nomenclature = row["Номенклатура"]
         forecast = row["Заказ"]
-        banki = ["Банка 1л", "Банка 2л", "Банка 3л", "Крышка"]
-
 
         if nomenclature in banki:
             other_second_table = other_second_table._append({other_second_table.columns[0]: nomenclature, other_second_table.columns[1]: f"{int(forecast)} уп."}, ignore_index=True)
         else:
             other_second_table = other_second_table._append({other_second_table.columns[0]: nomenclature, other_second_table.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
 
-
-    static_nomenclature = ["Пакет плотный -", "Пакет майка -", "Перчатки одноразовые -", "Пакет фасовочный -", "Контейнер черный новый -","Контейнер 250 мл. -", "Контейнер 500 мл. -", "Контейнер 1000 мл. -", "Мусорные пакеты большие -", "Мусорные пакеты маленькие на завязке  -", "Лента узкая -", "Стакан 0.5 -", "Ручка для банки -"]
 
     for static in static_nomenclature:
             new_row = {'Номенклатура': static, 'Заказ': "уп."}
@@ -399,17 +411,25 @@ def generate_report():
 
     # Запись таблиц в один Excel файл
     with pd.ExcelWriter(report_file_path) as writer:
+
         beer_results.to_excel(writer, sheet_name="Пиво", index=False)
         beer_second_table.to_excel(writer, sheet_name="Пиво", startrow=len(beer_results) + 3, index=False)
         text_shop.to_excel(writer, sheet_name="Пиво", startcol=6, index=False)
-        snacks_results.to_excel(writer, sheet_name="Закуски к пиву", index=False)
-        snacks_second_table.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, index=False)
-        snacks_second_table_kaspi.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, startcol=3, index=False)
-        snacks_second_table_sigma.to_excel(writer, sheet_name="Закуски к пиву", startrow=len(snacks_results) + 3, startcol=6, index=False)
-        text_shop.to_excel(writer, sheet_name="Закуски к пиву", startcol=6, index=False)
+
+        snacks_results.to_excel(writer, sheet_name="Мерка", index=False)
+        snacks_second_table.to_excel(writer, sheet_name="Мерка", startrow=len(snacks_results) + 3, index=False)
+        text_shop.to_excel(writer, sheet_name="Мерка", startcol=6, index=False)
+        snacks_results.to_excel(writer, sheet_name="Каспий", index=False)
+        snacks_second_table_kaspi.to_excel(writer, sheet_name="Каспий", startrow=len(snacks_results) + 3, index=False)
+        text_shop.to_excel(writer, sheet_name="Каспий", startcol=6, index=False)
+        snacks_results.to_excel(writer, sheet_name="Сиг", index=False)
+        snacks_second_table_sigma.to_excel(writer, sheet_name="Сиг", startrow=len(snacks_results) + 3, index=False)
+        text_shop.to_excel(writer, sheet_name="Сиг", startcol=6, index=False)
+
         other_results.to_excel(writer, sheet_name="Прочее", index=False)
         other_second_table.to_excel(writer, sheet_name="Прочее", startrow=len(other_results) + 3, index=False)
         text_shop.to_excel(writer, sheet_name="Прочее", startcol=6, index=False)
+
         message_result = tk.Label(window, text="", foreground="blue")
         message_result = tk.Label(window, text=f"Файл {report_file_path.split("/")[-1]} загружен", foreground="blue")
         message_result.place(relx=0.5, rely=0.72, anchor="center")
