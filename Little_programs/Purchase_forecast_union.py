@@ -3,6 +3,8 @@ import os
 import math
 import platform
 import datetime
+from openpyxl import load_workbook
+from datetime import datetime, timedelta
 import csv
 import tkinter as tk
 from tkinter import filedialog
@@ -13,6 +15,7 @@ sales_file_path = None
 residuals_file_path = None
 report_file_path = None
 selected_store = None
+
 
 all_beer = ["Жигулёвское", "Светлое НФ", "Тёмное", "Пилснер Ф", "Пилснер НФ", "Светлое Ф", "Пшеничное", "Вишнёвый крик", "Хеллес", "Крепкое", "Лёгкое", "IPA", "Грейпфрутовый эль", "APA", "Квас Воронеж"]
 
@@ -97,6 +100,78 @@ def handle_other(nomenclature, stock, total_quantity):
         return None
 
     return {"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": total_quantity, "Прогнозируемый остаток": forecasted_balance, "Заказ": abs(forecast)}
+
+
+def calc_end_date_kaspi():
+    day_of_week = datetime.now().weekday()
+    start_date_order = datetime.now() - timedelta(days=7)
+
+    if day_of_week == 2:
+        if selected_store == "12_Фрязино_Мира8":
+            return str((((start_date_order + timedelta(days=6))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        else:
+            return "None"
+    elif day_of_week == 3:
+        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    else:
+        return "None"
+
+
+def calc_end_date_merka():
+    day_of_week = datetime.now().weekday()
+    start_date_order = datetime.now() - timedelta(days=7)
+
+    if day_of_week == 0:
+        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    elif day_of_week == 1:
+        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    elif day_of_week == 2:
+        return str((((start_date_order + timedelta(days=5))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    elif day_of_week == 3:
+        return str((((start_date_order + timedelta(days=6))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    elif day_of_week == 6:
+        if selected_store == "14_Егорьевск_Советская191":
+            return str((((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        else:
+            return str((((start_date_order + timedelta(days=4))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    else:
+        return "None"
+
+
+def calc_end_date_beer():
+    day_of_week = datetime.now().weekday()
+    start_date_order = datetime.now() - timedelta(days=7)
+
+    if day_of_week == 0:
+        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    elif day_of_week == 1:
+        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    elif day_of_week == 2:
+        if selected_store == "9_Балашиха_Советский6/17":
+            return str((((start_date_order + timedelta(days=5))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        else:
+            return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    elif day_of_week == 3:
+        return str((((start_date_order + timedelta(days=4))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    elif day_of_week == 4:
+        if selected_store == "7_Балашиха_Свердлова25":
+            return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        else:
+            return str((((start_date_order + timedelta(days=2))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+    elif day_of_week == 6:
+        return str(((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S"))
+    else:
+        return "None"
+
+
+def calc_end_date_other():
+    day_of_week = datetime.now().weekday()
+    start_date_order = datetime.now() - timedelta(days=7)
+
+    if day_of_week == 6:
+        return str(((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S"))
+    else:
+        return "None"
 
 
 def text_for_shop():
@@ -233,33 +308,44 @@ def generate_report():
     # Создание "шапок" для таблиц
     beer_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Заказ кег", "Остаток литров"])
     beer_second_table = pd.DataFrame(columns=["Номенклатура(Воронеж)", "Заказ кег"])
-    snacks_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
+    snacks_results_kaspi = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
+    snacks_results_merka = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
+    # snacks_results_sigma = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
     snacks_second_table = pd.DataFrame(columns=["Номенклатура(Мерка)", "Заказ"])
     snacks_second_table_kaspi = pd.DataFrame(columns=["Номенклатура(Каспи)", "Заказ"])
-    snacks_second_table_sigma = pd.DataFrame(columns=["Номенклатура(Сиг)", "Заказ"])
+    # snacks_second_table_sigma = pd.DataFrame(columns=["Номенклатура(Сиг)", "Заказ"])
     other_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
     other_second_table = pd.DataFrame(columns=["Номенклатура", "Заказ"])
     text_shop = pd.DataFrame()
-
+    start_date_in_doc = pd.DataFrame()
+    end_date_in_doc_kaspi = pd.DataFrame()
+    end_date_in_doc_merka = pd.DataFrame()
+    end_date_in_doc_beer = pd.DataFrame()
+    end_date_in_doc_other = pd.DataFrame()
 
     selected_store = store_combobox.get()
-
 
     start_date_str = start_date.get() + " 00:00:00" if start_date.get() else "01.01.1900 00:00:00"
     end_date_str = end_date.get() + " 23:59:59" if end_date.get() else "31.12.9999 23:59:59"
     try:
-        start_date_dt = datetime.datetime.strptime(start_date_str, "%d.%m.%Y %H:%M:%S")
+        start_date_dt = datetime.strptime(start_date_str, "%d.%m.%Y %H:%M:%S")
     except ValueError:
         message_error.config(text="Введен неправильный формат начальной даты")
 
     try:
-        end_date_dt = datetime.datetime.strptime(end_date_str, "%d.%m.%Y %H:%M:%S")
+        end_date_dt = datetime.strptime(end_date_str, "%d.%m.%Y %H:%M:%S")
     except ValueError:
         message_error.config(text="Введен неправильный формат конечной даты")
 
     start_date_str = start_date_dt.strftime("%d.%m.%Y %H:%M:%S").format()
     end_date_str = end_date_dt.strftime("%d.%m.%Y %H:%M:%S").format()
 
+    start_date_order = (datetime.now() - timedelta(days=7)).replace(hour=0, minute=0, second=0, microsecond=0).strftime("%d.%m.%Y %H:%M:%S")
+
+    end_date_kaspi = calc_end_date_kaspi()
+    end_date_merka = calc_end_date_merka()
+    end_date_beer = calc_end_date_beer()
+    end_date_other = calc_end_date_other()
 
     all_nomenclatures_from_sales = set(sales["Номенклатура"].unique())
     residuals_nomenclatures = set(residuals["Номенклатура"])
@@ -275,9 +361,19 @@ def generate_report():
         nomenclature = row["Номенклатура"]
         stock = row["Остаток"]
 
-        # Находим все записи в файле с продажами, соответствующие текущей магазину и номенклатуре
         sales_data_filtered_shop = sales[sales["Магазин"] == selected_store]
-        sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_str) & (sales_data_filtered_shop["Дата и время"] <= end_date_str)]
+
+        if nomenclature in all_beer and end_date_beer != "None":
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_beer)]
+        elif nomenclature in kaspi_snacks and end_date_kaspi != "None":
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_kaspi)]
+        elif nomenclature in merka_snacks and end_date_merka != "None":
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_merka)]
+        elif nomenclature in banki and end_date_other != "None":
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_other)]
+        else:
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_str) & (sales_data_filtered_shop["Дата и время"] <= end_date_str)]
+
         matching_rows = sales_data_filtered_date[sales_data_filtered_date["Номенклатура"] == nomenclature]
 
         # Обработка данных для пива
@@ -309,7 +405,12 @@ def generate_report():
             total_quantity = matching_rows["Количество товара"].sum()
 
             snacks_result = handle_snacks(nomenclature, stock, total_quantity)
-            snacks_results = snacks_results._append(snacks_result, ignore_index=True)
+            if nomenclature in kaspi_snacks:
+                snacks_results_kaspi = snacks_results_kaspi._append(snacks_result, ignore_index=True)
+            elif nomenclature in merka_snacks:
+                snacks_results_merka = snacks_results_merka._append(snacks_result, ignore_index=True)
+            else:
+                pass
 
         if not matching_rows.empty and matching_rows["Категория товара"].str.contains("Прочее").any():
             total_quantity = matching_rows["Количество товара"].sum()
@@ -320,8 +421,10 @@ def generate_report():
         if not any(sales_data_filtered_date["Номенклатура"] == nomenclature):
             if nomenclature in all_beer:
                 beer_results = beer_results._append({"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": 0, "Заказ кег": 0, "Остаток литров": 0}, ignore_index=True)
-            elif nomenclature in merka_snacks or nomenclature in kaspi_snacks or nomenclature in sigma_snacks:
-                snacks_results = snacks_results._append({"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": 0, "Прогнозируемый остаток": 0, "Заказ": 0}, ignore_index=True)
+            elif nomenclature in merka_snacks:
+                snacks_results_merka = snacks_results_merka._append({"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": 0, "Прогнозируемый остаток": 0, "Заказ": 0}, ignore_index=True)
+            elif nomenclature in kaspi_snacks:
+                snacks_results_kaspi = snacks_results_kaspi._append({"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": 0, "Прогнозируемый остаток": 0, "Заказ": 0}, ignore_index=True)
 
 
 
@@ -370,25 +473,27 @@ def generate_report():
                 beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
 
     #Вторая таблица для закусок к пиву
-    for index, row in snacks_results.iterrows():
+    for index, row in snacks_results_merka.iterrows():
         nomenclature = row["Номенклатура"]
         forecast = row["Заказ"]
         forecasted_balance = row["Прогнозируемый остаток"]
 
         if forecasted_balance.is_integer():
-            if nomenclature in kaspi_snacks:
-                snacks_second_table_kaspi = snacks_second_table_kaspi._append({snacks_second_table_kaspi.columns[0]: nomenclature, snacks_second_table_kaspi.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
-            elif nomenclature in sigma_snacks:
-                snacks_second_table_sigma = snacks_second_table_sigma._append({snacks_second_table_sigma.columns[0]: nomenclature, snacks_second_table_sigma.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
-            elif nomenclature in merka_snacks:
-                snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
+            snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
         else:
-            if nomenclature in kaspi_snacks:
-                snacks_second_table_kaspi = snacks_second_table_kaspi._append({snacks_second_table_kaspi.columns[0]: nomenclature, snacks_second_table_kaspi.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
-            elif nomenclature in sigma_snacks:
-                snacks_second_table_sigma = snacks_second_table_sigma._append({snacks_second_table_sigma.columns[0]: nomenclature, snacks_second_table_sigma.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
-            elif nomenclature in merka_snacks:
-                snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
+            snacks_second_table = snacks_second_table._append({snacks_second_table.columns[0]: nomenclature, snacks_second_table.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
+
+
+    for index, row in snacks_results_kaspi.iterrows():
+        nomenclature = row["Номенклатура"]
+        forecast = row["Заказ"]
+        forecasted_balance = row["Прогнозируемый остаток"]
+
+        if forecasted_balance.is_integer():
+            snacks_second_table_kaspi = snacks_second_table_kaspi._append({snacks_second_table_kaspi.columns[0]: nomenclature, snacks_second_table_kaspi.columns[1]: f"{int(forecast)} шт."}, ignore_index=True)
+        else:
+            snacks_second_table_kaspi = snacks_second_table_kaspi._append({snacks_second_table_kaspi.columns[0]: nomenclature, snacks_second_table_kaspi.columns[1]: f"{int(math.ceil(forecast))} кг."}, ignore_index=True)
+
 
     #Вторая таблица для прочего
     for index, row in other_results.iterrows():
@@ -406,6 +511,11 @@ def generate_report():
             other_second_table = other_second_table._append(new_row, ignore_index=True)
 
     text_shop = text_shop._append(text_for_shop(), ignore_index=True)
+    start_date_in_doc = start_date_in_doc._append({"":start_date_order}, ignore_index=True)
+    end_date_in_doc_kaspi = end_date_in_doc_kaspi._append({"":end_date_kaspi}, ignore_index=True)
+    end_date_in_doc_merka = end_date_in_doc_merka._append({"":end_date_merka}, ignore_index=True)
+    end_date_in_doc_beer = end_date_in_doc_beer._append({"":end_date_beer}, ignore_index=True)
+    end_date_in_doc_other = end_date_in_doc_other._append({"":end_date_other}, ignore_index=True)
 
     save_file()
 
@@ -415,20 +525,31 @@ def generate_report():
         beer_results.to_excel(writer, sheet_name="Пиво", index=False)
         beer_second_table.to_excel(writer, sheet_name="Пиво", startrow=len(beer_results) + 3, index=False)
         text_shop.to_excel(writer, sheet_name="Пиво", startcol=6, index=False)
+        start_date_in_doc.to_excel(writer, sheet_name="Пиво", startcol=7, index=False)
+        end_date_in_doc_beer.to_excel(writer, sheet_name="Пиво", startcol=8, index=False)
 
-        snacks_results.to_excel(writer, sheet_name="Мерка", index=False)
-        snacks_second_table.to_excel(writer, sheet_name="Мерка", startrow=len(snacks_results) + 3, index=False)
+        snacks_results_merka.to_excel(writer, sheet_name="Мерка", index=False)
+        snacks_second_table.to_excel(writer, sheet_name="Мерка", startrow=len(snacks_results_merka) + 3, index=False)
         text_shop.to_excel(writer, sheet_name="Мерка", startcol=6, index=False)
-        snacks_results.to_excel(writer, sheet_name="Каспий", index=False)
-        snacks_second_table_kaspi.to_excel(writer, sheet_name="Каспий", startrow=len(snacks_results) + 3, index=False)
+        start_date_in_doc.to_excel(writer, sheet_name="Мерка", startcol=7, index=False)
+        end_date_in_doc_merka.to_excel(writer, sheet_name="Мерка", startcol=8, index=False)
+
+        snacks_results_kaspi.to_excel(writer, sheet_name="Каспий", index=False)
+        snacks_second_table_kaspi.to_excel(writer, sheet_name="Каспий", startrow=len(snacks_results_kaspi) + 3, index=False)
         text_shop.to_excel(writer, sheet_name="Каспий", startcol=6, index=False)
-        snacks_results.to_excel(writer, sheet_name="Сиг", index=False)
-        snacks_second_table_sigma.to_excel(writer, sheet_name="Сиг", startrow=len(snacks_results) + 3, index=False)
-        text_shop.to_excel(writer, sheet_name="Сиг", startcol=6, index=False)
+        start_date_in_doc.to_excel(writer, sheet_name="Каспий", startcol=7, index=False)
+        end_date_in_doc_kaspi.to_excel(writer, sheet_name="Каспий", startcol=8, index=False)
+
+        # snacks_results_sigma.to_excel(writer, sheet_name="Сиг", index=False)
+        # snacks_second_table_sigma.to_excel(writer, sheet_name="Сиг", startrow=len(snacks_results_sigma) + 3, index=False)
+        # text_shop.to_excel(writer, sheet_name="Сиг", startcol=6, index=False)
+        # start_date_in_doc.to_excel(writer, sheet_name="Сиг", startcol=7, index=False)
 
         other_results.to_excel(writer, sheet_name="Прочее", index=False)
         other_second_table.to_excel(writer, sheet_name="Прочее", startrow=len(other_results) + 3, index=False)
         text_shop.to_excel(writer, sheet_name="Прочее", startcol=6, index=False)
+        start_date_in_doc.to_excel(writer, sheet_name="Прочее", startcol=7, index=False)
+        end_date_in_doc_other.to_excel(writer, sheet_name="Прочее", startcol=8, index=False)
 
         message_result = tk.Label(window, text="", foreground="blue")
         message_result = tk.Label(window, text=f"Файл {report_file_path.split("/")[-1]} загружен", foreground="blue")
