@@ -126,13 +126,13 @@ def calc_end_date_kaspi():
         if selected_store == "12_Фрязино_Мира8":
             return ((start_date_order + timedelta(days=6))).replace(hour=23, minute=59, second=59, microsecond=59)
         else:
-            return "None"
+            return datetime.max
     elif day_of_week == 3:
         return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 6:
         return ((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59)
     else:
-        return "None"
+        return datetime.max
 
 
 def calc_end_date_merka():
@@ -153,7 +153,7 @@ def calc_end_date_merka():
         else:
             return ((start_date_order + timedelta(days=4))).replace(hour=23, minute=59, second=59, microsecond=59)
     else:
-        return "None"
+        return datetime.max
 
 
 def calc_end_date_beer():
@@ -179,7 +179,7 @@ def calc_end_date_beer():
     elif day_of_week == 6:
         return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     else:
-        return "None"
+        return datetime.max
 
 
 def calc_end_date_other():
@@ -189,7 +189,7 @@ def calc_end_date_other():
     if day_of_week == 6:
         return ((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59)
     else:
-        return "None"
+        return datetime.max
 
 
 def text_for_shop():
