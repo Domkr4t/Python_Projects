@@ -124,13 +124,13 @@ def calc_end_date_kaspi():
 
     if day_of_week == 2:
         if selected_store == "12_Фрязино_Мира8":
-            return str((((start_date_order + timedelta(days=6))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+            return ((start_date_order + timedelta(days=6))).replace(hour=23, minute=59, second=59, microsecond=59)
         else:
             return "None"
     elif day_of_week == 3:
-        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 6:
-        return str((((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        return ((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59)
     else:
         return "None"
 
@@ -140,18 +140,18 @@ def calc_end_date_merka():
     start_date_order = datetime.now() - timedelta(days=7)
 
     if day_of_week == 0:
-        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 1:
-        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 2:
-        return str((((start_date_order + timedelta(days=5))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        return ((start_date_order + timedelta(days=5))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 3:
-        return str((((start_date_order + timedelta(days=6))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        return ((start_date_order + timedelta(days=6))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 6:
         if selected_store == "14_Егорьевск_Советская191":
-            return str((((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+            return ((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59)
         else:
-            return str((((start_date_order + timedelta(days=4))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+            return ((start_date_order + timedelta(days=4))).replace(hour=23, minute=59, second=59, microsecond=59)
     else:
         return "None"
 
@@ -161,23 +161,23 @@ def calc_end_date_beer():
     start_date_order = datetime.now() - timedelta(days=7)
 
     if day_of_week == 0:
-        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 1:
-        return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 2:
         if selected_store == "9_Балашиха_Советский6/17":
-            return str((((start_date_order + timedelta(days=5))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+            return ((start_date_order + timedelta(days=5))).replace(hour=23, minute=59, second=59, microsecond=59)
         else:
-            return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+            return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 3:
-        return str((((start_date_order + timedelta(days=4))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+        return ((start_date_order + timedelta(days=4))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 4:
         if selected_store == "7_Балашиха_Свердлова25":
-            return str((((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+            return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
         else:
-            return str((((start_date_order + timedelta(days=2))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S")))
+            return ((start_date_order + timedelta(days=2))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 6:
-        return str(((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S"))
+        return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     else:
         return "None"
 
@@ -187,7 +187,7 @@ def calc_end_date_other():
     start_date_order = datetime.now() - timedelta(days=7)
 
     if day_of_week == 6:
-        return str(((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59).strftime("%d.%m.%Y %H:%M:%S"))
+        return ((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59)
     else:
         return "None"
 
@@ -217,6 +217,8 @@ def text_for_shop():
         return ["Добрый день.", "Заказ ИП Петрова,", "Южная улица, 19А, Дрезна,"]
     elif selected_store == "3_Электросталь_Ялагина11":
         return ["Добрый день.", "Заказ ИП Петрова,", "Ул.Ялагина, 11, Электросталь,"]
+    elif selected_store == "2_Электросталь_Победы1/2":
+        return ["Добрый день.", "Заказ ИП Петрова,", "улица Победы, 1к2, Электросталь,"]
     else:
         return "Хз чо за магаз"
 
@@ -231,7 +233,7 @@ def fill_excel_kaspi(ws):
             for word in kaspi_yellow:
                 if str(cell.value).lower() == word.lower():
                     cell.fill = fill_yellow
-                    break 
+                    break
 
 
 def fill_excel_merka(ws):
@@ -244,7 +246,7 @@ def fill_excel_merka(ws):
             for word in merka_yellow:
                 if str(cell.value).lower() == word.lower():
                     cell.fill = fill_yellow
-                    break 
+                    break
 
 # Загрузка файла с продажами
 def load_sales_file():
@@ -342,6 +344,7 @@ def generate_report():
     sales = pd.read_excel(f"{sales_file_path}", skiprows=4, usecols=[0, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
     sales_column_names = ["Магазин", "Дата и время", "Id чека", "Диск карт", "Владелец карты", "Номер телефона", "Категория товара", "Группа товара", "Номенклатура", "Сумма продаж", "Количество товара", "Остаток на складе", "Сумма скидки", "Себестоимость продаж", "Валовая прибыль"]
     sales.columns = sales_column_names
+    sales['Дата и время'] = pd.to_datetime(sales['Дата и время'])
 
     # Чтение данных из второго файла (с остатками)
     residuals = pd.read_excel(f"{residuals_file_path}", skiprows=2, usecols=[0, 2]) # пропуск строки с назва
@@ -383,7 +386,7 @@ def generate_report():
     start_date_str = start_date_dt.strftime("%d.%m.%Y %H:%M:%S").format()
     end_date_str = end_date_dt.strftime("%d.%m.%Y %H:%M:%S").format()
 
-    start_date_order = (datetime.now() - timedelta(days=7)).replace(hour=0, minute=0, second=0, microsecond=0).strftime("%d.%m.%Y %H:%M:%S")
+    start_date_order = (datetime.now() - timedelta(days=7)).replace(hour=0, minute=0, second=0, microsecond=0)
 
     end_date_kaspi = calc_end_date_kaspi()
     end_date_merka = calc_end_date_merka()
@@ -406,6 +409,7 @@ def generate_report():
 
         sales_data_filtered_shop = sales[sales["Магазин"] == selected_store]
 
+
         if nomenclature in all_beer and end_date_beer != "None":
             sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_beer)]
         elif nomenclature in kaspi_snacks and end_date_kaspi != "None":
@@ -417,7 +421,12 @@ def generate_report():
         else:
             sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_str) & (sales_data_filtered_shop["Дата и время"] <= end_date_str)]
 
+
         matching_rows = sales_data_filtered_date[sales_data_filtered_date["Номенклатура"] == nomenclature]
+
+        # print(nomenclature)
+        # print(matching_rows)
+        # print("\n\n\n")
 
         # Обработка данных для пива
         if not matching_rows.empty and matching_rows["Категория товара"].str.contains("Амбирлэнд").any() | matching_rows["Номенклатура"].str.contains("Квас").any():
@@ -453,7 +462,7 @@ def generate_report():
             elif nomenclature in merka_snacks:
                 snacks_results_merka = snacks_results_merka._append(snacks_result, ignore_index=True)
             else:
-                pass
+                print(f"{nomenclature} никуда не попало")
 
         if not matching_rows.empty and matching_rows["Категория товара"].str.contains("Прочее").any():
             total_quantity = matching_rows["Количество товара"].sum()
@@ -468,6 +477,8 @@ def generate_report():
                 snacks_results_merka = snacks_results_merka._append({"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": 0, "Прогнозируемый остаток": 0, "Заказ": 0}, ignore_index=True)
             elif nomenclature in kaspi_snacks:
                 snacks_results_kaspi = snacks_results_kaspi._append({"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": 0, "Прогнозируемый остаток": 0, "Заказ": 0}, ignore_index=True)
+            elif nomenclature in banki:
+                other_results = other_results._append({"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": 0, "Прогнозируемый остаток": 0, "Заказ": 0}, ignore_index=True)
 
 
 
@@ -496,6 +507,8 @@ def generate_report():
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Боровское урожайное", "Домашнее", "Пилснер Ф", "Пилснер НФ", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Хмельзилла ИПА НФ", "Леди на велосипеде", "Вайлд Черри", "Квас"]
         elif selected_store == "12_Фрязино_Мира8":
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Боровское урожайное", "Домашнее", "Пилснер Ф", "Пилснер НФ", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Бирконг НФ АРА", "Леди на велосипеде", "Вайлд Черри", "Квас"]
+        elif selected_store == "2_Электросталь_Победы1/2":
+            filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Домашнее", "Пилснер Ф", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Вайлд Черри", "Леди на велосипеде", "Квас"]
 
         if nomenclature in filred_snacks:
             if nomenclature == "Пилснер НФ":
@@ -554,11 +567,11 @@ def generate_report():
             other_second_table = other_second_table._append(new_row, ignore_index=True)
 
     text_shop = text_shop._append(text_for_shop(), ignore_index=True)
-    start_date_in_doc = start_date_in_doc._append({"":start_date_order}, ignore_index=True)
-    end_date_in_doc_kaspi = end_date_in_doc_kaspi._append({"":end_date_kaspi}, ignore_index=True)
-    end_date_in_doc_merka = end_date_in_doc_merka._append({"":end_date_merka}, ignore_index=True)
-    end_date_in_doc_beer = end_date_in_doc_beer._append({"":end_date_beer}, ignore_index=True)
-    end_date_in_doc_other = end_date_in_doc_other._append({"":end_date_other}, ignore_index=True)
+    start_date_in_doc = start_date_in_doc._append({"":start_date_order.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
+    end_date_in_doc_kaspi = end_date_in_doc_kaspi._append({"":end_date_kaspi.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
+    end_date_in_doc_merka = end_date_in_doc_merka._append({"":end_date_merka.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
+    end_date_in_doc_beer = end_date_in_doc_beer._append({"":end_date_beer.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
+    end_date_in_doc_other = end_date_in_doc_other._append({"":end_date_other.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
 
     save_file()
 
