@@ -344,7 +344,7 @@ def generate_report():
     sales = pd.read_excel(f"{sales_file_path}", skiprows=4, usecols=[0, 3, 4, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18])
     sales_column_names = ["Магазин", "Дата и время", "Id чека", "Диск карт", "Владелец карты", "Номер телефона", "Категория товара", "Группа товара", "Номенклатура", "Сумма продаж", "Количество товара", "Остаток на складе", "Сумма скидки", "Себестоимость продаж", "Валовая прибыль"]
     sales.columns = sales_column_names
-    sales['Дата и время'] = pd.to_datetime(sales['Дата и время'])
+    sales['Дата и время'] = pd.to_datetime(sales['Дата и время'], dayfirst=True)
 
     # Чтение данных из второго файла (с остатками)
     residuals = pd.read_excel(f"{residuals_file_path}", skiprows=2, usecols=[0, 2]) # пропуск строки с назва
