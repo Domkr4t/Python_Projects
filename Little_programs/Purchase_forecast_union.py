@@ -70,6 +70,13 @@ def handle_beer(nomenclature, stock, total_quantity):
         remaining_liters = stock - total_quantity
     else:
         remaining_liters = 0
+
+    if remaining_liters <= 25:
+        if forecast <= 0: 
+            forecast = forecast - 1
+        else: 
+            forecast = forecast + 1
+
     return {"Номенклатура": nomenclature, "Остаток": stock, "Прогноз": total_quantity, "Заказ кег": forecast, "Остаток литров": remaining_liters}
 
 
@@ -128,7 +135,7 @@ def calc_end_date_kaspi():
         else:
             return datetime.max
     elif day_of_week == 3:
-        return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
+        return ((start_date_order + timedelta(days=5))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 6:
         return ((start_date_order + timedelta(days=7))).replace(hour=23, minute=59, second=59, microsecond=59)
     else:
@@ -140,8 +147,11 @@ def calc_end_date_merka():
     start_date_order = datetime.now() - timedelta(days=7)
 
     if day_of_week == 0:
-        return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
-    elif day_of_week == 1:
+        if selected_store == "10_Коломна_Советская5":
+            return ((start_date_order + timedelta(days=8))).replace(hour=23, minute=59, second=59, microsecond=59)
+        else:    
+            return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
+    elif day_of_week == 1: 
         return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 2:
         return ((start_date_order + timedelta(days=5))).replace(hour=23, minute=59, second=59, microsecond=59)
@@ -354,6 +364,7 @@ def generate_report():
     # Создание "шапок" для таблиц
     beer_results = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Заказ кег", "Остаток литров"])
     beer_second_table = pd.DataFrame(columns=["Номенклатура(Воронеж)", "Заказ кег"])
+    beer_second_table_our_name = pd.DataFrame(columns=["Номенклатура(Воронеж)", "Заказ кег"])
     snacks_results_kaspi = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
     snacks_results_merka = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
     # snacks_results_sigma = pd.DataFrame(columns=["Номенклатура", "Остаток", "Прогноз", "Прогнозируемый остаток", "Заказ"])
@@ -496,7 +507,7 @@ def generate_report():
         elif selected_store == "7_Балашиха_Свердлова25":
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Домашнее", "Пилснер Ф", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Хмельзилла ИПА НФ", "Леди на велосипеде", "Вайлд Черри", "Квас"]
         elif selected_store == "4_Электросталь_Ленина15":
-            filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Боровское урожайное", "Пилснер Ф", "Пилснер НФ", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Бирконг НФ АРА", "Леди на велосипеде", "Вайлд Черри", "Квас"]
+            filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Боровское урожайное", "Пилснер Ф", "Пилснер НФ", "Бундес Ф", "Вайс канцлер НФ", "Домашнее", "Империал канцлер НФ", "Бирконг НФ АРА", "Леди на велосипеде", "Вайлд Черри", "Квас"]
         elif selected_store == "3_Электросталь_Ялагина11":
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Домашнее", "Пилснер Ф", "Бундес Ф", "Вайс канцлер НФ", "Леди на велосипеде", "Квас"]
         elif selected_store == "9_Балашиха_Советский6/17":
@@ -530,6 +541,26 @@ def generate_report():
                 beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)} уп."}, ignore_index=True)
             else:
                 beer_second_table = beer_second_table._append({beer_second_table.columns[0]: nomenclature, beer_second_table.columns[1]: f"{abs(forecast)}*30"}, ignore_index=True)
+
+    #Таблица с нашими названиями
+    beer_second_table_our_name = beer_second_table.copy()
+
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Жигулёвское Ф", "Жигулёвское")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Боровское светлое НФ", "Светлое НФ")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Боровское тёмное Ф", "Тёмное")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Пилснер Ф", "Пилснер Ф")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Пилснер НФ", "Пилснер НФ")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Бундес Ф", "Светлое Ф")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Вайс канцлер НФ", "Пшеничное")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Вайлд Черри", "Вишнёвый крик")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Боровское урожайное", "Хеллес")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Империал канцлер НФ", "Крепкое")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Домашнее", "Лёгкое")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Хмельзилла ИПА НФ", "IPA")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Леди на велосипеде", "Грейпфрутовый эль")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Бирконг НФ АРА", "APA")
+    beer_second_table_our_name["Номенклатура(Воронеж)"] = beer_second_table_our_name["Номенклатура(Воронеж)"].replace("Квас", "Квас Воронеж")
+
 
     #Вторая таблица для закусок к пиву
     for index, row in snacks_results_merka.iterrows():
@@ -583,6 +614,7 @@ def generate_report():
 
         beer_results.to_excel(writer, sheet_name="Пиво", index=False)
         beer_second_table.to_excel(writer, sheet_name="Пиво", startrow=len(beer_results) + 3, index=False)
+        beer_second_table_our_name.to_excel(writer, sheet_name="Пиво", startrow=len(beer_results) + 3, startcol=5, index=False)
         text_shop.to_excel(writer, sheet_name="Пиво", startcol=6, index=False)
         start_date_in_doc.to_excel(writer, sheet_name="Пиво", startcol=7, index=False)
         end_date_in_doc_beer.to_excel(writer, sheet_name="Пиво", startcol=8, index=False)
