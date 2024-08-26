@@ -96,9 +96,11 @@ def handle_snacks(nomenclature, stock, total_quantity):
             elif forecasted_balance < 5:
                 forecast = 5
     elif nomenclature not in piece_snacks:
-        if forecasted_balance < 0.600:
+        if total_quantity <= 0.100 and forecasted_balance >= 0.300:
+            forecast = 0
+        elif forecasted_balance < 0.600:
             forecast = 1 - abs(forecasted_balance)
-        if forecasted_balance < 0:
+        elif forecasted_balance < 0:
             forecast = abs(forecasted_balance)
         elif forecasted_balance >= 0.600:
             forecast = 0
