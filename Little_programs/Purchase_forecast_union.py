@@ -149,7 +149,7 @@ def calc_end_date_merka():
     start_date_order = datetime.now() - timedelta(days=7)
 
     if day_of_week == 0:
-        if selected_store == "10_Коломна_Советская5" or selected_store == "17_Коломна_Кирова38":
+        if selected_store == "10_Коломна_Советская5" or selected_store == "18_Коломна_Кирова38а":
             return ((start_date_order + timedelta(days=8))).replace(hour=23, minute=59, second=59, microsecond=59)
         else:
             return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
@@ -184,7 +184,7 @@ def calc_end_date_beer():
     elif day_of_week == 3:
         return ((start_date_order + timedelta(days=4))).replace(hour=23, minute=59, second=59, microsecond=59)
     elif day_of_week == 4:
-        if selected_store == "7_Балашиха_Свердлова25" or selected_store == "18_Железнодорожный":
+        if selected_store == "7_Балашиха_Свердлова25" or selected_store == "17_Балашиха_Маяковского12с2":
             return ((start_date_order + timedelta(days=3))).replace(hour=23, minute=59, second=59, microsecond=59)
         else:
             return ((start_date_order + timedelta(days=2))).replace(hour=23, minute=59, second=59, microsecond=59)
@@ -231,9 +231,9 @@ def text_for_shop():
         return ["Добрый день.", "Заказ ИП Петрова,", "Ул.Ялагина, 11, Электросталь,"]
     elif selected_store == "2_Электросталь_Победы1/2":
         return ["Добрый день.", "Заказ ИП Петрова,", "улица Победы, 1к2, Электросталь,"]
-    elif selected_store == "17_Коломна_Кирова38":
+    elif selected_store == "18_Коломна_Кирова38а":
         return ["Добрый день.", "Заказ ИП Петрова,", "Г. Коломна Проспект Кирова 38а"]
-    elif selected_store == "18_Железнодорожный":
+    elif selected_store == "17_Балашиха_Маяковского12с2":
         return ["Добрый день.", "Заказ ИП Петрова,", "Г. Балашиха, мкр. Железнодорожный, ул. Маяковского, дом 12 стр 2"]
     else:
         return "Хз чо за магаз"
@@ -528,9 +528,9 @@ def generate_report():
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Домашнее", "Пилснер Ф", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Вайлд Черри", "Леди на велосипеде", "Квас"]
         elif selected_store == "1_Дрезна_Южная19а":
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Домашнее", "Пилснер Ф", "Бундес Ф", "Вайс канцлер НФ", "Империал канцлер НФ", "Вайлд Черри", "Леди на велосипеде", "Квас"]
-        elif selected_store == "18_Железнодорожный":
+        elif selected_store == "17_Балашиха_Маяковского12с2":
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Пилснер Ф", "Бундес Ф", "Вайс канцлер НФ", "Вайлд Черри", "Квас"]
-        elif selected_store == "17_Коломна_Кирова38":
+        elif selected_store == "18_Коломна_Кирова38а":
             filred_snacks = ["Жигулёвское Ф", "Боровское светлое НФ", "Боровское тёмное Ф", "Пилснер Ф", "Бундес Ф", "Вайс канцлер НФ", "Вайлд Черри", "Бирконг НФ АРА", "Квас"]
         else:
             filred_snacks = []
