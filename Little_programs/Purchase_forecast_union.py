@@ -17,8 +17,10 @@ residuals_file_path = None
 report_file_path = None
 selected_store = None
 
+all_beer = ["Амбирлэнд Жигулёвское", "Амбирлэнд Светлое НФ", "Амбирлэнд Тёмное", "Амбирлэнд Пилснер Ф", "Амбирлэнд Пилснер НФ", "Амбирлэнд Светлое Ф", "Амбирлэнд Пшеничное", "Амбирлэнд Вишнёвый крик", "Амбирлэнд Хеллес", "Амбирлэнд Крепкое", "Амбирлэнд Лёгкое", "Амбирлэнд IPA", "Амбирлэнд Грейпфрутовый эль", "Амбирлэнд APA", "Квас"]
 
-all_beer = ["Жигулёвское", "Светлое НФ", "Тёмное", "Пилснер Ф", "Пилснер НФ", "Светлое Ф", "Пшеничное", "Вишнёвый крик", "Хеллес", "Крепкое", "Лёгкое", "IPA", "Грейпфрутовый эль", "APA", "Квас"]
+
+# all_beer = ["Жигулёвское", "Светлое НФ", "Тёмное", "Пилснер Ф", "Пилснер НФ", "Светлое Ф", "Пшеничное", "Вишнёвый крик", "Хеллес", "Крепкое", "Лёгкое", "IPA", "Грейпфрутовый эль", "APA", "Квас"]
 
 merka_snacks = ["Гренки Бородинские Чеснок", "Гренки по-деревенски чеснок", "Гренки тайский соус", "Гренки багет Мексиканский микс", "Гренки красная икра", "Гренки томат-зелень", "Гренки чеснок", "Гренки сыр", "Ломтики курицы", "Ломтики говядины", "Чипсы мясные свинина", "Чипсы мясные курица", "Курица Халапеньо", "Чипсы мясные индейка гриль", "Фисташки", "Миндаль жареный соленый", "Ореховый микс", "Японские снэки", "Арахис семга-сыр", "Арахис в глазури сметана-зелень", "Арахис в глазури сыр", "Арахис шашлык", "Арахис семга - сыр", "Арахис соль", "Арахис сыр-чеснок", "Арахис в глазури васаби", "Сыр Косичка", "Сыр Охотник", 'Сыр "Бочонок"', "Сыр Джил", "Семечки с солью 130г", "Уши свиные в ассортименте 90г", "Чипсы Мистер Потато оригинальные 40г", "Чипсы Мистер Потато сметана/лук 40г", "Чипсы Мистер Потато барбекю 40г", "Чипсы Мистер Потато острые 40г", "Лещ", "Камбала с икрой", "Камбала Ёрш", "Камбала без икры", "Пелядь", "Чехонь", "Плотва", "Синец", "Вобла", "Мойва вяленая", "Сырок", "Щука", "Вобла Астраханская", "Рыбец", "Тарань", "Палочки кеты", "Мясо краба", "Желтый полосатик", "Икра минтая", "Осьминог", "Мясо краба по-шанхайски", "Кольца кальмара", "Палочки горбуши", "Кольца кальмара по-шанхайски", "Стружка кальмара", "Мидии", "Ассорти рыбное", "Стружка кальмара по-шанхайски", "Икра воблы", "Хот-тейс", "Камбалка сушеная", "Колбаски мясные со вкусом чили", "Колбаски мясные с чесноком", "Соломка форели", "Таранка с перцем", "Щупальцы кальмара", "Вомер х/к", "Жерех х/к", "Теша горбуши х/к", "Лещ х/к]"]
 
@@ -54,7 +56,7 @@ def custom_ceil(number):
 
 # Функция для обработки пива
 def handle_beer(nomenclature, stock, total_quantity):
-    nomenclature_50 = ["Амбирлэнд Пилснер НФ", "Амбирлэнд Пилснер Ф", "Амбирлэнд Жигулёвское", "Амбирлэнд Квас Воронеж"]
+    nomenclature_50 = ["Амбирлэнд Пилснер НФ", "Амбирлэнд Пилснер Ф", "Амбирлэнд Жигулёвское", "Квас Воронеж"]
 
     if nomenclature in nomenclature_50:
         forecast = math.floor((stock - total_quantity) / 50)
@@ -427,19 +429,15 @@ def generate_report():
         sales_data_filtered_shop = sales[sales["Магазин"] == selected_store]
 
         if start_date_str != "01.01.1900 00:00:00" or end_date_str != "31.12.9999 23:59:59":
-            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_str) & (sales_data_filtered_shop["Дата и время"] <= end_date_str)]
-        else:
-            if nomenclature in all_beer and end_date_beer != "None":
-                sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_beer)]
-            elif nomenclature in kaspi_snacks and end_date_kaspi != "None":
-                sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_kaspi)]
-            elif nomenclature in merka_snacks and end_date_merka != "None":
-                sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_merka)]
-            elif nomenclature in banki and end_date_other != "None":
-                sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_other)]
-            else:
-                sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_str) & (sales_data_filtered_shop["Дата и время"] <= end_date_str)]
-            
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_dt) & (sales_data_filtered_shop["Дата и время"] <= end_date_dt)]
+        elif nomenclature in all_beer and end_date_beer != "None":
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_beer)]
+        elif nomenclature in kaspi_snacks and end_date_kaspi != "None":
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_kaspi)]
+        elif nomenclature in merka_snacks and end_date_merka != "None":
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_merka)]
+        elif nomenclature in banki and end_date_other != "None":
+            sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_other)]
 
         # if nomenclature in all_beer and end_date_beer != "None":
         #     sales_data_filtered_date = sales_data_filtered_shop[(sales_data_filtered_shop["Дата и время"] >= start_date_order) & (sales_data_filtered_shop["Дата и время"] <= end_date_beer)]
@@ -627,21 +625,18 @@ def generate_report():
             other_second_table = other_second_table._append(new_row, ignore_index=True)
 
     text_shop = text_shop._append(text_for_shop(), ignore_index=True)
-    if start_date_str == "01.01.1900 00:00:00":
-        start_date_in_doc = start_date_in_doc._append({"":start_date_order.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
-    else:
+    if start_date_str != "01.01.1900 00:00:00" or end_date_str != "31.12.9999 23:59:59":
         start_date_in_doc = start_date_in_doc._append({"":start_date_str}, ignore_index=True)
-    
-    if end_date_str == "31.12.9999 23:59:59":
-        end_date_in_doc_kaspi = end_date_in_doc_kaspi._append({"":end_date_kaspi.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
-        end_date_in_doc_merka = end_date_in_doc_merka._append({"":end_date_merka.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
-        end_date_in_doc_beer = end_date_in_doc_beer._append({"":end_date_beer.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
-        end_date_in_doc_other = end_date_in_doc_other._append({"":end_date_other.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
-    else:
         end_date_in_doc_kaspi = end_date_in_doc_kaspi._append({"":end_date_str}, ignore_index=True)
         end_date_in_doc_merka = end_date_in_doc_merka._append({"":end_date_str}, ignore_index=True)
         end_date_in_doc_beer = end_date_in_doc_beer._append({"":end_date_str}, ignore_index=True)
         end_date_in_doc_other = end_date_in_doc_other._append({"":end_date_str}, ignore_index=True)
+    else:
+        start_date_in_doc = start_date_in_doc._append({"":start_date_order.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
+        end_date_in_doc_kaspi = end_date_in_doc_kaspi._append({"":end_date_kaspi.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
+        end_date_in_doc_merka = end_date_in_doc_merka._append({"":end_date_merka.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
+        end_date_in_doc_beer = end_date_in_doc_beer._append({"":end_date_beer.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
+        end_date_in_doc_other = end_date_in_doc_other._append({"":end_date_other.strftime('%d.%m.%Y %H:%M:%S')}, ignore_index=True)
 
     save_file()
 
